@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.ro-store</groupId>
+  <artifactId>rostore-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>RoStore Parent</name>
+  <description>Fast and simple memory-mapped Key-Value store</description>
+  <url>https://ro-store.net</url>
+
+  <modules>
+      <module>rostore-media</module>
+      <module>rostore-async</module>
+      <module>rostore-service</module>
+      <module>rostore-utils</module>
+      <module>rostore-client</module>
+      <module>rostore-cli</module>
+  </modules>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Ilya Tsyganov</name>
+      <email>ilya.tsyganov@ro-store.net</email>
+      <organization>Ro-Store</organization>
+      <organizationUrl>https://ro-store.net</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com:icyganov/rostore-core.git</connection>
+    <developerConnection>scm:git:ssh://github.com:icyganov/rostore-core.git</developerConnection>
+    <url>https://github.com/icyganov/rostore-core</url>
+  </scm>
+
+  <properties>
+    <compiler-plugin.version>3.8.1</compiler-plugin.version>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
+    <maven.compiler.source>19</maven.compiler.source>
+    <maven.compiler.target>19</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <surefire-plugin.version>2.22.1</surefire-plugin.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire-plugin.version}</version>
+        <!--configuration>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemPropertyVariables>
+        </configuration-->
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

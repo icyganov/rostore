@@ -1,0 +1,17 @@
+<assembly>
+    <id>tar</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <files>
+        <file>
+            <source>target/rostore-cli.jar</source>
+            <destName>rostore-cli.jar</destName>
+        </file>
+        <file>
+            <source>rostore-cli</source>
+            <destName>rostore-cli</destName>
+        </file>
+    </files>
+</assembly>

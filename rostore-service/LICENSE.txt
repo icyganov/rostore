@@ -1,0 +1,328 @@
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+Rostore includes a number of components and libraries with separate
+        copyright notices and license terms. Your use of those components are
+        subject to the terms and conditions of the following licenses:
+
+     (Apache 2.0) cron-utils (com.cronutils:cron-utils:9.1.1 - http://cron-parser.com/)
+     (The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.11.3 - http://github.com/FasterXML/jackson)
+     (The Apache Software License, Version 2.0) Jackson-core (com.fasterxml.jackson.core:jackson-core:2.11.3 - https://github.com/FasterXML/jackson-core)
+     (The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.11.3 - http://github.com/FasterXML/jackson)
+     (The Apache Software License, Version 2.0) Jackson-dataformat-YAML (com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.3 - https://github.com/FasterXML/jackson-dataformats-text)
+     (The Apache Software License, Version 2.0) Jackson datatype: jdk8 (com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8)
+     (The Apache Software License, Version 2.0) Jackson datatype: JSR310 (com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
+     (The Apache Software License, Version 2.0) Jackson-module-parameter-names (com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-module-parameter-names)
+     (The Apache Software License, Version 2.0) asyncutil (com.ibm.async:asyncutil:0.1.0 - http://github.com/ibm/java-async-util)
+     (EDL 1.0) JavaBeans Activation Framework (com.sun.activation:jakarta.activation:1.2.1 - https://github.com/eclipse-ee4j/jaf/jakarta.activation)
+     (The Apache Software License, Version 2.0) Apache Commons Codec (commons-codec:commons-codec:1.14 - https://commons.apache.org/proper/commons-codec/)
+     (The Apache Software License, Version 2.0) Apache Commons IO (commons-io:commons-io:2.8.0 - https://commons.apache.org/proper/commons-io/)
+     (The Apache Software License, Version 2.0) Apache Commons Logging (commons-logging:commons-logging:1.2 - http://commons.apache.org/proper/commons-logging/)
+     (The Apache Software License, Version 2.0) Netty/Buffer (io.netty:netty-buffer:4.1.49.Final - https://netty.io/netty-buffer/)
+     (The Apache Software License, Version 2.0) Netty/Codec (io.netty:netty-codec:4.1.49.Final - https://netty.io/netty-codec/)
+     (The Apache Software License, Version 2.0) Netty/Codec/DNS (io.netty:netty-codec-dns:4.1.49.Final - https://netty.io/netty-codec-dns/)
+     (The Apache Software License, Version 2.0) Netty/Codec/HTTP (io.netty:netty-codec-http:4.1.49.Final - https://netty.io/netty-codec-http/)
+     (The Apache Software License, Version 2.0) Netty/Codec/HTTP2 (io.netty:netty-codec-http2:4.1.49.Final - https://netty.io/netty-codec-http2/)
+     (The Apache Software License, Version 2.0) Netty/Codec/Socks (io.netty:netty-codec-socks:4.1.49.Final - https://netty.io/netty-codec-socks/)
+     (The Apache Software License, Version 2.0) Netty/Common (io.netty:netty-common:4.1.49.Final - https://netty.io/netty-common/)
+     (The Apache Software License, Version 2.0) Netty/Handler (io.netty:netty-handler:4.1.49.Final - https://netty.io/netty-handler/)
+     (The Apache Software License, Version 2.0) Netty/Handler/Proxy (io.netty:netty-handler-proxy:4.1.49.Final - https://netty.io/netty-handler-proxy/)
+     (The Apache Software License, Version 2.0) Netty/Resolver (io.netty:netty-resolver:4.1.49.Final - https://netty.io/netty-resolver/)
+     (The Apache Software License, Version 2.0) Netty/Resolver/DNS (io.netty:netty-resolver-dns:4.1.49.Final - https://netty.io/netty-resolver-dns/)
+     (The Apache Software License, Version 2.0) Netty/Transport (io.netty:netty-transport:4.1.49.Final - https://netty.io/netty-transport/)
+     (The Apache Software License, Version 2.0) Quarkus - ArC - Runtime (io.quarkus:quarkus-arc:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-arc-parent/quarkus-arc)
+     (The Apache Software License, Version 2.0) Quarkus - Bootstrap - Runner (io.quarkus:quarkus-bootstrap-runner:1.9.1.Final - http://www.jboss.org/quarkus-bootstrap-parent/quarkus-bootstrap-runner)
+     (The Apache Software License, Version 2.0) Quarkus - Core - Runtime (io.quarkus:quarkus-core:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-core-parent/quarkus-core)
+     (The Apache Software License, Version 2.0) Quarkus - Development mode - SPI (io.quarkus:quarkus-development-mode-spi:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-development-mode-spi)
+     (The Apache Software License, Version 2.0) Quarkus - IDE Launcher (io.quarkus:quarkus-ide-launcher:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-ide-launcher)
+     (The Apache Software License, Version 2.0) Quarkus - Jackson - Runtime (io.quarkus:quarkus-jackson:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-jackson-parent/quarkus-jackson)
+     (The Apache Software License, Version 2.0) Quarkus - JSON-B - Runtime (io.quarkus:quarkus-jsonb:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-jsonb-parent/quarkus-jsonb)
+     (The Apache Software License, Version 2.0) Quarkus - JSON-P - Runtime (io.quarkus:quarkus-jsonp:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-jsonp-parent/quarkus-jsonp)
+     (The Apache Software License, Version 2.0) Quarkus - Logging - JSON - Runtime (io.quarkus:quarkus-logging-json:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-logging-json-parent/quarkus-logging-json)
+     (The Apache Software License, Version 2.0) Quarkus - Mutiny - Runtime (io.quarkus:quarkus-mutiny:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-mutiny-parent/quarkus-mutiny)
+     (The Apache Software License, Version 2.0) Quarkus - Netty - Runtime (io.quarkus:quarkus-netty:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-netty-parent/quarkus-netty)
+     (The Apache Software License, Version 2.0) Quarkus - RESTEasy - Runtime (io.quarkus:quarkus-resteasy:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-resteasy-parent/quarkus-resteasy)
+     (The Apache Software License, Version 2.0) Quarkus - RESTEasy - Common - Runtime (io.quarkus:quarkus-resteasy-common:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-resteasy-common-parent/quarkus-resteasy-common)
+     (The Apache Software License, Version 2.0) Quarkus - RESTEasy - JSON-B - Runtime (io.quarkus:quarkus-resteasy-jsonb:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-resteasy-jsonb-parent/quarkus-resteasy-jsonb)
+     (The Apache Software License, Version 2.0) Quarkus - RESTEasy - Mutiny - Runtime (io.quarkus:quarkus-resteasy-mutiny:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-resteasy-mutiny-parent/quarkus-resteasy-mutiny)
+     (The Apache Software License, Version 2.0) Quarkus - RESTEasy - Mutiny - Common - Runtime (io.quarkus:quarkus-resteasy-mutiny-common:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-resteasy-mutiny-common-parent/quarkus-resteasy-mutiny-common)
+     (The Apache Software License, Version 2.0) Quarkus - RESTEasy - Server common - Runtime (io.quarkus:quarkus-resteasy-server-common:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-resteasy-server-common-parent/quarkus-resteasy-server-common)
+     (The Apache Software License, Version 2.0) Quarkus - Scheduler - Runtime (io.quarkus:quarkus-scheduler:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-scheduler-parent/quarkus-scheduler)
+     (The Apache Software License, Version 2.0) Quarkus - Security - Runtime SPI (io.quarkus:quarkus-security-runtime-spi:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-security-parent/quarkus-security-runtime-spi)
+     (The Apache Software License, Version 2.0) Quarkus - SmallRye Context Propagation - Runtime (io.quarkus:quarkus-smallrye-context-propagation:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-smallrye-context-propagation-parent/quarkus-smallrye-context-propagation)
+     (The Apache Software License, Version 2.0) Quarkus - SmallRye OpenAPI - Runtime (io.quarkus:quarkus-smallrye-openapi:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-smallrye-openapi-parent/quarkus-smallrye-openapi)
+     (The Apache Software License, Version 2.0) Quarkus - Swagger UI - Runtime (io.quarkus:quarkus-swagger-ui:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-swagger-ui-parent/quarkus-swagger-ui)
+     (The Apache Software License, Version 2.0) Quarkus - Vert.x - Runtime (io.quarkus:quarkus-vertx:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-vertx-parent/quarkus-vertx)
+     (The Apache Software License, Version 2.0) Quarkus - Vert.x - Core - Runtime (io.quarkus:quarkus-vertx-core:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-vertx-core-parent/quarkus-vertx-core)
+     (The Apache Software License, Version 2.0) Quarkus - Vert.x - HTTP - Runtime (io.quarkus:quarkus-vertx-http:1.9.1.Final - http://www.jboss.org/quarkus-parent/quarkus-build-parent/quarkus-extensions-parent/quarkus-vertx-http-parent/quarkus-vertx-http)
+     (The Apache Software License, Version 2.0) ArC - Runtime (io.quarkus.arc:arc:1.9.1.Final - http://www.jboss.org/arc-parent/arc)
+     (The Apache Software License, Version 2.0) quarkus-security (io.quarkus.security:quarkus-security:1.1.3.Final - http://www.jboss.org/quarkus-security)
+     (The Apache Software License, Version 2.0) RxJava (io.reactivex.rxjava2:rxjava:2.2.19 - https://github.com/ReactiveX/RxJava)
+     (The Apache Software License, Version 2.0) smallrye-context-propagation (io.smallrye:smallrye-context-propagation:1.0.13 - https://github.com/smallrye/smallrye-context-propagation/smallrye-context-propagation)
+     (The Apache Software License, Version 2.0) smallrye-context-propagation-api (io.smallrye:smallrye-context-propagation-api:1.0.13 - https://github.com/smallrye/smallrye-context-propagation/smallrye-context-propagation-api)
+     (The Apache Software License, Version 2.0) SmallRye: OpenAPI Core (io.smallrye:smallrye-open-api-core:2.0.10 - http://smallrye.io/smallrye-open-api-core)
+     (The Apache Software License, Version 2.0) SmallRye Common: Annotations (io.smallrye.common:smallrye-common-annotation:1.4.0 - http://smallrye.io/smallrye-common-annotation)
+     (The Apache Software License, Version 2.0) SmallRye Common: Classloader (io.smallrye.common:smallrye-common-classloader:1.4.0 - http://smallrye.io/smallrye-common-classloader)
+     (The Apache Software License, Version 2.0) SmallRye Common: Constraints (io.smallrye.common:smallrye-common-constraint:1.4.0 - http://smallrye.io/smallrye-common-constraint)
+     (The Apache Software License, Version 2.0) SmallRye Common: Expressions (io.smallrye.common:smallrye-common-expression:1.4.0 - http://smallrye.io/smallrye-common-expression)
+     (The Apache Software License, Version 2.0) SmallRye Common: Functions (io.smallrye.common:smallrye-common-function:1.4.0 - http://smallrye.io/smallrye-common-function)
+     (The Apache Software License, Version 2.0) SmallRye: MicroProfile Config Implementation (io.smallrye.config:smallrye-config:1.9.3 - http://smallrye.io/smallrye-config)
+     (The Apache Software License, Version 2.0) SmallRye: Common classes (io.smallrye.config:smallrye-config-common:1.9.3 - http://smallrye.io/smallrye-config-common)
+     (The Apache Software License, Version 2.0) SmallRye Mutiny (io.smallrye.reactive:mutiny:0.9.0 - http://smallrye.io/mutiny-project/mutiny)
+     (The Apache Software License, Version 2.0) SmallRye Mutiny integration with MicroProfile Context Propagation (io.smallrye.reactive:mutiny-context-propagation:0.9.0 - http://smallrye.io/mutiny-project/mutiny-context-propagation)
+     (The Apache Software License, Version 2.0) SmallRye Mutiny - MicroProfile Reactive Streams Operators Implementation (io.smallrye.reactive:mutiny-reactive-streams-operators:0.9.0 - http://smallrye.io/mutiny-project/mutiny-reactive-streams-operators)
+     (The Apache Software License, Version 2.0) SmallRye Axle - Vert.x Core (io.smallrye.reactive:smallrye-axle-core:1.2.2 - http://smallrye.io/smallrye-reactive-utilities-projects/smallrye-axle-clients/smallrye-axle-core)
+     (The Apache Software License, Version 2.0) SmallRye Axle - Vert.x Code Generator (io.smallrye.reactive:smallrye-axle-generator:1.2.2 - http://smallrye.io/smallrye-reactive-utilities-projects/smallrye-axle-clients/smallrye-axle-generator)
+     (The Apache Software License, Version 2.0) SmallRye Mutiny - Vert.x Core (io.smallrye.reactive:smallrye-mutiny-vertx-core:1.2.2 - http://smallrye.io/smallrye-reactive-utilities-projects/vertx-mutiny-clients/smallrye-mutiny-vertx-core)
+     (The Apache Software License, Version 2.0) SmallRye Mutiny - Runtime Helpers (io.smallrye.reactive:smallrye-mutiny-vertx-runtime:1.2.2 - http://smallrye.io/smallrye-reactive-utilities-projects/vertx-mutiny-clients/smallrye-mutiny-vertx-runtime)
+     (The Apache Software License, Version 2.0) SmallRye Mutiny - Code Generator (io.smallrye.reactive:vertx-mutiny-generator:1.2.2 - http://smallrye.io/smallrye-reactive-utilities-projects/vertx-mutiny-clients/vertx-mutiny-generator)
+     (Eclipse Public License - v 1.0) (The Apache Software License, Version 2.0) vertx-auth-common (io.vertx:vertx-auth-common:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-ext/vertx-ext-parent/vertx-auth/vertx-auth-common)
+     (Eclipse Public License - v 1.0) (The Apache Software License, Version 2.0) Vert.x Bridge Common (io.vertx:vertx-bridge-common:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-ext/vertx-ext-parent/vertx-bridge-common)
+     (Eclipse Public License - v 1.0) (The Apache Software License, Version 2.0) vertx-codegen (io.vertx:vertx-codegen:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-codegen)
+     (Eclipse Public License - v 2.0) (The Apache Software License, Version 2.0) Vert.x Core (io.vertx:vertx-core:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-core)
+     (Eclipse Public License - v 1.0) (The Apache Software License, Version 2.0) Vert.x Rx Code Generator (io.vertx:vertx-rx-gen:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-rx/vertx-rx-gen)
+     (Eclipse Public License - v 1.0) (The Apache Software License, Version 2.0) Vert.x RxJava2 API (io.vertx:vertx-rx-java2:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-rx/vertx-rx-java2)
+     (Eclipse Public License - v 2.0) (The Apache Software License, Version 2.0) vertx-web (io.vertx:vertx-web:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-ext/vertx-ext-parent/vertx-web-parent/vertx-web)
+     (Eclipse Public License - v 1.0) (The Apache Software License, Version 2.0) vertx-web-common (io.vertx:vertx-web-common:3.9.4 - http://nexus.sonatype.org/oss-repository-hosting.html/vertx-parent/vertx-ext/vertx-ext-parent/vertx-web-parent/vertx-web-common)
+     (EPL 2.0) (GPL2 w/ CPE) Jakarta Annotations API (jakarta.annotation:jakarta.annotation-api:1.3.5 - https://projects.eclipse.org/projects/ee4j.ca)
+     (EPL 2.0) (GPL2 w/ CPE) Jakarta Enterprise Beans (jakarta.ejb:jakarta.ejb-api:3.2.6 - https://github.com/eclipse-ee4j/ejb-api)
+     (EPL 2.0) (GPL2 w/ CPE) Jakarta Expression Language 3.0 API (jakarta.el:jakarta.el-api:3.0.3 - https://projects.eclipse.org/projects/ee4j.el)
+     (Apache License 2.0) Jakarta CDI (jakarta.enterprise:jakarta.enterprise.cdi-api:2.0.2 - http://cdi-spec.org)
+     (The Apache Software License, Version 2.0) Jakarta Dependency Injection (jakarta.inject:jakarta.inject-api:1.0 - https://github.com/eclipse-ee4j/injection-api)
+     (EPL 2.0) (GPL2 w/ CPE) Jakarta Interceptors (jakarta.interceptor:jakarta.interceptor-api:1.2.5 - https://github.com/eclipse-ee4j/interceptor-api)
+     (Eclipse Public License 2.0) (GNU General Public License, version 2 with the GNU Classpath Exception) Jakarta JSON Processing API (jakarta.json:jakarta.json-api:1.1.6 - https://github.com/eclipse-ee4j/jsonp)
+     (Eclipse Public License 2.0) (GNU General Public License, version 2 with the GNU Classpath Exception) JSON-B API (jakarta.json.bind:jakarta.json.bind-api:1.0.2 - https://eclipse-ee4j.github.io/jsonb-api)
+     (EPL 2.0) (GPL2 w/ CPE) javax.transaction API (jakarta.transaction:jakarta.transaction-api:1.3.3 - https://projects.eclipse.org/projects/ee4j.jta)
+     (Apache License 2.0) Jakarta Bean Validation API (jakarta.validation:jakarta.validation-api:2.0.2 - https://beanvalidation.org)
+     (The Apache Software License, Version 2.0) Apache Commons Lang (org.apache.commons:commons-lang3:3.9 - http://commons.apache.org/proper/commons-lang/)
+     (The Apache Software License, Version 2.0) Apache HttpClient (org.apache.httpcomponents:httpclient:4.5.13 - http://hc.apache.org/httpcomponents-client)
+     (The Apache Software License, Version 2.0) Apache HttpCore (org.apache.httpcomponents:httpcore:4.4.13 - http://hc.apache.org/httpcomponents-core-ga)
+     (Eclipse Distribution License v. 1.0) (Eclipse Public License v. 2.0) org.eclipse.yasson (org.eclipse:yasson:1.0.8 - https://projects.eclipse.org/projects/ee4j.yasson)
+     (The Apache Software License, Version 2.0) MicroProfile Config API (org.eclipse.microprofile.config:microprofile-config-api:1.4 - http://microprofile.io/microprofile-config-api)
+     (The Apache Software License, Version 2.0) MicroProfile Context Propagation (org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.0.1 - http://microprofile.io/microprofile-context-propagation-api)
+     (The Apache Software License, Version 2.0) MicroProfile OpenAPI API (org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.2 - http://microprofile.io/microprofile-openapi-api)
+     (The Apache Software License, Version 2.0) Eclipse MicroProfile Reactive Streams Operators API (org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0.1 - http://microprofile.io/microprofile-reactive-streams-operators-api)
+     (The Apache Software License, Version 2.0) MicroProfile Reactive Streams Operators Core (org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0.1 - http://microprofile.io/microprofile-reactive-streams-operators-core)
+     (Eclipse Public License 2.0) (GNU General Public License, version 2 with the GNU Classpath Exception) JSON-P Default Provider (org.glassfish:jakarta.json:1.1.6 - https://github.com/eclipse-ee4j/jsonp)
+     (Universal Permissive License, Version 1.0) Graal Sdk (org.graalvm.sdk:graal-sdk:20.2.0 - https://github.com/oracle/graal)
+     (The Apache Software License, Version 2.0) Java Annotation Indexer (org.jboss:jandex:2.2.1.Final - http://www.jboss.org/jandex)
+     (Apache License, version 2.0) JBoss Logging 3 (org.jboss.logging:jboss-logging:3.4.1.Final - http://www.jboss.org)
+     (Apache License, version 2.0) JBoss Logging I18n Annotations (org.jboss.logging:jboss-logging-annotations:2.1.0.Final - http://www.jboss.org/jboss-logging-tools-parent/jboss-logging-annotations)
+     (Apache License 2.0) JBoss Log Manager (Embedded) (org.jboss.logmanager:jboss-logmanager-embedded:1.0.5 - http://www.jboss.org/jboss-logmanager-embedded)
+     (Apache License 2.0) RESTEasy JAX-RS Client (org.jboss.resteasy:resteasy-client:4.5.8.Final - http://rest-easy.org/resteasy-client)
+     (Apache License 2.0) RESTEasy JAX-RS Client API (org.jboss.resteasy:resteasy-client-api:4.5.8.Final - http://rest-easy.org/resteasy-client-api)
+     (Apache License 2.0) RESTEasy JAX-RS Core (org.jboss.resteasy:resteasy-core:4.5.8.Final - http://rest-easy.org/resteasy-core)
+     (Apache License 2.0) RESTEasy JAX-RS Core SPI (org.jboss.resteasy:resteasy-core-spi:4.5.8.Final - http://rest-easy.org/resteasy-core-spi)
+     (Apache License 2.0) RESTEasy JSON-Binding Provider (org.jboss.resteasy:resteasy-json-binding-provider:4.5.8.Final - http://rest-easy.org/resteasy-json-binding-provider)
+     (Apache License 2.0) RESTEasy JSON-P EE7 Provider (org.jboss.resteasy:resteasy-json-p-provider:4.5.8.Final - http://rest-easy.org/resteasy-json-p-provider)
+     (Public Domain) slf4j to JBoss Logging Adapter (org.jboss.slf4j:slf4j-jboss-logging:1.2.0.Final - http://www.jboss.org)
+     (EPL 2.0) (GPL2 w/ CPE) JBoss Jakarta Annotations API (org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec:2.0.1.Final - https://github.com/jboss/jboss-jakarta-annotations-api_spec)
+     (EPL 2.0) (GPL2 w/ CPE) jboss-jakarta-jaxrs-api_spec (org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.1.Final - http://www.jboss.org/jboss-jaxrs-api_2.1_spec)
+     (Eclipse Distribution License - v 1.0) Jakarta XML Binding API (org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.3_spec:2.0.0.Final - https://github.com/eclipse-ee4j/jaxb-api/jboss-jaxb-api_2.3_spec)
+     (Apache License 2.0) JBoss Threads (org.jboss.threads:jboss-threads:3.1.1.Final - http://www.jboss.org/jboss-threads)
+     (The Apache Software License, Version 2.0) mvel (org.mvel:mvel2:2.4.7.Final - http://mvel.codehaus.org/)
+     (The Apache Software License, Version 2.0) org.osgi:org.osgi.annotation.versioning (org.osgi:org.osgi.annotation.versioning:1.0.0 - http://www.osgi.org/)
+     (BSD-3-Clause) asm (org.ow2.asm:asm:8.0.1 - http://asm.ow2.io/)
+     (CC0) reactive-streams (org.reactivestreams:reactive-streams:1.0.3 - http://www.reactive-streams.org/)
+     (MIT License) SLF4J API Module (org.slf4j:slf4j-api:1.7.30 - http://www.slf4j.org)
+     (Apache License 2.0) wildfly-common (org.wildfly.common:wildfly-common:1.5.4.Final-format-001 - http://www.jboss.org/wildfly-common)
+     (The Apache Software License, Version 2.0) SnakeYAML (org.yaml:snakeyaml:1.27 - http://www.snakeyaml.org)

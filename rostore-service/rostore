@@ -1,0 +1,227 @@
+echo "- RO-STORE CLI v1.0.0 ----------------------------"
+echo
+
+# --- Check or set the ROSTORE_HOME
+
+if [ -z "$ROSTORE_HOME" ]; then
+  export ROSTORE_HOME="$(pwd)"
+fi
+
+cd "$ROSTORE_HOME"
+if [ "$ROSTORE_HOME" != $(pwd) ]; then
+  echo "Error: The ROSTORE_HOME is not set or set to non-existing directory."
+  exit 1
+fi
+
+JAR_FILE="rostore-runner.jar"
+CODE_BASE="$ROSTORE_HOME/"
+if [ -d "$ROSTORE_HOME/target" ]; then
+  CODE_BASE="$ROSTORE_HOME/target/"
+fi
+ROSTORE_JAR_FILE="${CODE_BASE}${JAR_FILE}"
+CLI="${CODE_BASE}/rostore-cli"
+
+if [ ! -f "$ROSTORE_JAR_FILE" ]; then
+  echo "Error: No $ROSTORE_JAR_FILE file found in ROSTORE_HOME"
+  exit 1
+fi
+
+# --- Read the rostore.properties and set them as variable
+
+echo "  ROSTORE_HOME=$ROSTORE_HOME"
+while IFS= read -r VAR || [[ -n "$VAR" ]]
+do
+  if [ ! -z "$VAR" ]; then
+    [[ $VAR =~ ^#.* ]] && continue
+    PROPERTY=(${VAR//=/ })
+    PROPERTY_NAME="${PROPERTY[0]}"
+    PROPERTY_NAME_LENGTH="${#PROPERTY_NAME}"
+    PROPERTY_NAME_LENGTH=$((PROPERTY_NAME_LENGTH+1))
+    PROPERTY_VALUE="${VAR:${PROPERTY_NAME_LENGTH}}"
+    PROPERTY_VALUE=${PROPERTY_VALUE//\$ROSTORE_HOME/$ROSTORE_HOME}
+    if [[ $PROPERTY_NAME == *"_API_KEY" ]]; then
+      if [ -z "$PROPERTY_VALUE" ]; then
+        echo "  $PROPERTY_NAME="
+      else
+        echo "  $PROPERTY_NAME=********-****-****-****-*********${PROPERTY_VALUE: -3}"
+      fi
+    else
+      echo "  $PROPERTY_NAME=$PROPERTY_VALUE"
+    fi
+
+    export $PROPERTY_NAME="$PROPERTY_VALUE"
+  fi
+done < "$ROSTORE_HOME/rostore.properties"
+
+# --- Init logging
+
+echo
+
+export ROSTORE_LOG_FILE=$ROSTORE_LOG_DIR/rostore.log
+
+if [ ! -f "$ROSTORE_LOG_FILE" ]; then
+  if [ ! -d "$ROSTORE_LOG_DIR" ]; then
+    echo "No log directory $ROSTORE_LOG_DIR is detected. Create one."
+    mkdir -p $ROSTORE_LOG_DIR
+  else
+    touch "$ROSTORE_LOG_FILE"
+  fi
+fi
+
+# --- Check script parameters
+
+OPERATION=$1
+DEBUG=$2
+SUSPEND=$3
+
+OPERATION_LIST="stop, start, restart, log, log-tail, status"
+
+if [ -z "$OPERATION" ]; then
+  echo "Usage: $0 operation [-debug -suspend]"
+  echo "Operation: $OPERATION_LIST"
+  exit 1
+fi
+
+function detect_rostore() {
+  LIST_STR=$(ps -eao "pid,command" | grep java | grep "$ROSTORE_JAR_FILE" | grep "$ROSTORE_HOME")
+  LIST=($LIST_STR)
+  CMD=${LIST[1]}
+  if [ "$CMD" == "java" ]; then
+    PID=${LIST[0]}
+  else
+    PID=""
+  fi
+}
+
+if [ "$ROSTORE_ROOT_API_KEY" == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" ]; then
+    echo "> Error: please, generate and replace the ROSTORE_ROOT_API_KEY=$ROSTORE_ROOT_API_KEY in rostore.properties"
+    exit 1
+fi
+
+if [ "$ROSTORE_PUBLIC_API_KEY" == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" ]; then
+    echo "> Error: please, generate and replace the ROSTORE_PUBLIC_API_KEY=$ROSTORE_PUBLIC_API_KEY in rostore.properties"
+    exit 1
+fi
+
+if [ $OPERATION != "status" ] && [ $OPERATION != "log-tail" ] && [ $OPERATION != "log" ] && [ $OPERATION != "start" ] && [ $OPERATION != "restart" ] && [ $OPERATION != "stop" ]; then
+  echo "Error: unknown operation $OPERATION"
+  echo
+  echo "Usage: $0 operation"
+  echo "Operation: $OPERATION_LIST"
+  exit 1
+fi
+
+# --- Main part: operations
+
+if [ $OPERATION == "status" ]; then
+  echo "! Retrieving the rostore process status"
+  echo
+  detect_rostore
+  if [ ! -z "$PID" ]; then
+    echo "There is a running rostore process with PID=$PID.."
+    $CLI ping
+    if [ $? != 0 ]; then
+        exit 1
+    fi
+  else
+    echo "Error: No rostore process is currently running.."
+    exit 1
+  fi
+fi
+
+if [ $OPERATION == "stop" ]; then
+  detect_rostore
+  echo "! Stopping an existing rostore process"
+  echo
+  if [ ! -z "$PID" ]; then
+    echo "Shutting down the rostore process"
+    $CLI shutdown
+    if [ $? != 0 ]; then
+        echo "Shutdown didn't work, try to kill the process PID=$PID"
+        kill $PID
+        RESULT=$?
+        if [ "$RESULT" != 0 ]; then
+          echo "> Error: Kill did not work."
+          exit 1
+        fi
+    fi
+    echo
+    echo "> Rostore process has been successfully terminated."
+  else
+    echo "> Error: No rostore process has been detected"
+    exit 1
+  fi
+fi
+
+if [ $OPERATION == "start" ] || [ $OPERATION == "restart" ]; then
+  detect_rostore
+  if [ $OPERATION == "restart" ]; then
+    echo "! Re-starting a rostore process"
+    echo
+    if [ ! -z "$PID" ]; then
+      echo "There is another rostore process running, PID=$PID. Try to shut it down first."
+      $CLI shutdown
+      if [ $? != 0 ]; then
+        echo "Shutting down didn't work, try to kill the process PID=$PID"
+        kill "$PID"
+        sleep 1
+        detect_rostore
+        if [ ! -z "$PID" ]; then
+          echo "> Error: Kill did not work."
+          exit 1
+        fi
+      fi
+      echo "The old process has been successfully terminated."
+    else
+      echo "Warning: no other rostore process has been detected. Continue."
+    fi
+  else
+    echo "! Starting a rostore process"
+    echo
+    if [ ! -z "$PID" ]; then
+      echo "> Error: There is another rostore process running, PID=$PID"
+      exit 1
+    fi
+  fi
+
+  if [ "$DEBUG" == "-debug" ]; then
+    if [ -z "$ROSTORE_DEBUG_PORT" ]; then
+      ROSTORE_DEBUG_PORT="5005"
+    fi
+    SUSPEND_OPTION="n"
+    if [ "$SUSPEND" == "-suspend" ]; then
+        SUSPEND_OPTION="y"
+    fi
+    DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=$SUSPEND_OPTION,address=*:$ROSTORE_DEBUG_PORT"
+  else
+    DEBUG=""
+  fi
+  echo "Starting a new rostore process, logging to $ROSTORE_LOG_FILE"
+  if [ ! -z "$DEBUG" ]; then
+    echo "Debug mode is enabled, attach debugger to $ROSTORE_DEBUG_PORT"
+  fi
+  nohup java $DEBUG $ROSTORE_JAVA_OPTIONS -jar $ROSTORE_JAR_FILE &>> $ROSTORE_LOG_FILE &
+  sleep 1
+  detect_rostore
+  if [ ! -z "$PID" ]; then
+    echo
+    echo "> Rostore has been successfully started, PID=$PID"
+    exit 0
+  else
+    echo "> Error: No running version is detected. Error."
+    exit 1
+  fi
+fi
+
+if [ $OPERATION == "log-tail" ]; then
+  echo "! Logging the rostore process tail"
+  echo
+  tail -f $ROSTORE_LOG_FILE
+fi
+
+if [ $OPERATION == "log" ]; then
+  ROSTORE_LOG_LINES=100
+  echo "! Showing last $ROSTORE_LOG_LINES lines of rostore process log ($ROSTORE_LOG_FILE)"
+  echo
+  tail -$ROSTORE_LOG_LINES $ROSTORE_LOG_FILE
+fi
