@@ -37,9 +37,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com:icyganov/rostore-core.git</connection>
-    <developerConnection>scm:git:ssh://github.com:icyganov/rostore-core.git</developerConnection>
-    <url>https://github.com/icyganov/rostore-core</url>
+    <connection>scm:git:git://github.com:icyganov/rostore.git</connection>
+    <developerConnection>scm:git:ssh://github.com:icyganov/rostore.git</developerConnection>
+    <url>https://github.com/icyganov/rostore</url>
   </scm>
 
   <properties>
