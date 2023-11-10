@@ -29,7 +29,7 @@ public class KeysTest {
         mediaPropertiesBuilder.setBlockSize(40);
         Media media = Media.create(file, MediaProperties.from(mediaPropertiesBuilder));
 
-        Assertions.assertEquals((Properties.AVG_FREE_BLOCK_NUMBER+1) *40, media.getMemoryManagement().getPayloadSize());
+        Assertions.assertEquals(2 *40, media.getMemoryManagement().getPayloadSize());
 
         BlockContainer bc = media.newBlockContainer();
         BlockAllocator secondaryBlockAllocator = media.createSecondaryBlockAllocator("blah",
@@ -49,7 +49,7 @@ public class KeysTest {
 
         secondaryBlockAllocator.remove();
 
-        Assertions.assertEquals((Properties.AVG_FREE_BLOCK_NUMBER+1) *40, media.getMemoryManagement().getPayloadSize());
+        Assertions.assertEquals(2 *40, media.getMemoryManagement().getPayloadSize());
 
     }
 

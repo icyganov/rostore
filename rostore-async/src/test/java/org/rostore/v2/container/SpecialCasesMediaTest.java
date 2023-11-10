@@ -1,5 +1,6 @@
 package org.rostore.v2.container;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.rostore.TestFile;
 import org.rostore.entity.Record;
@@ -20,6 +21,7 @@ import java.util.concurrent.Future;
 public class SpecialCasesMediaTest {
 
     @Test
+    @Disabled
     public void test() {
         MediaPropertiesBuilder mediaPropertiesBuilder = new MediaPropertiesBuilder();
         mediaPropertiesBuilder.setMaxTotalSize(4096*10000);

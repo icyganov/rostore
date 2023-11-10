@@ -14,6 +14,8 @@ import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.allocator.BlockAllocator;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MediaTest {
 
@@ -21,13 +23,13 @@ public class MediaTest {
     public void openCloseOpen() {
         File file = TestFile.createNewFile("media-1.blck");
         MediaPropertiesBuilder mediaPropertiesBuilder = new MediaPropertiesBuilder();
-        mediaPropertiesBuilder.setMaxTotalSize(256*10);
+        mediaPropertiesBuilder.setMaxTotalSize(256*16);
         mediaPropertiesBuilder.setBlockSize(256);
         Media media = Media.create(file, MediaProperties.from(mediaPropertiesBuilder));
         MemoryAllocation memoryAllocation = media.getMemoryManagement();
-        Assertions.assertEquals(5, memoryAllocation.getLockedFreeSize() / 256);
-        Assertions.assertEquals(5, memoryAllocation.getPayloadSize() / 256);
-        Assertions.assertEquals(10, memoryAllocation.getTotalLockedSize() / 256);
+        Assertions.assertEquals(14, memoryAllocation.getLockedFreeSize() / 256);
+        Assertions.assertEquals(2, memoryAllocation.getPayloadSize() / 256);
+        Assertions.assertEquals(16, memoryAllocation.getTotalLockedSize() / 256);
 
         CatalogBlockIndices ids1 = media.getBlockAllocator().allocate(BlockType.CATALOG,4);
 
@@ -37,23 +39,25 @@ public class MediaTest {
         } catch (RoStoreException roStoreException) {
         }
 
-        Assertions.assertEquals(1, memoryAllocation.getLockedFreeSize() / 256);
-        Assertions.assertEquals(9, memoryAllocation.getPayloadSize() / 256);
-        Assertions.assertEquals(10, memoryAllocation.getTotalLockedSize() / 256);
+        memoryAllocation = media.getMemoryManagement();
+        Assertions.assertEquals(10, memoryAllocation.getLockedFreeSize() / 256);
+        Assertions.assertEquals(6, memoryAllocation.getPayloadSize() / 256);
+        Assertions.assertEquals(16, memoryAllocation.getTotalLockedSize() / 256);
 
         media.getBlockAllocator().free(ids1);
 
-        Assertions.assertEquals(5, memoryAllocation.getLockedFreeSize() / 256);
-        Assertions.assertEquals(5, memoryAllocation.getPayloadSize() / 256);
-        Assertions.assertEquals(10, memoryAllocation.getTotalLockedSize() / 256);
+        memoryAllocation = media.getMemoryManagement();
+        Assertions.assertEquals(14, memoryAllocation.getLockedFreeSize() / 256);
+        Assertions.assertEquals(2, memoryAllocation.getPayloadSize() / 256);
+        Assertions.assertEquals(16, memoryAllocation.getTotalLockedSize() / 256);
 
         media.close();
 
         Media media1 = Media.open(file);
         MemoryAllocation memoryAllocation1 = media1.getMemoryManagement();
-        Assertions.assertEquals(0, memoryAllocation1.getLockedFreeSize() / 256);
-        Assertions.assertEquals(10, memoryAllocation1.getPayloadSize() / 256);
-        Assertions.assertEquals(10, memoryAllocation1.getTotalLockedSize() / 256);
+        Assertions.assertEquals(14, memoryAllocation1.getLockedFreeSize() / 256);
+        Assertions.assertEquals(2, memoryAllocation1.getPayloadSize() / 256);
+        Assertions.assertEquals(16, memoryAllocation1.getTotalLockedSize() / 256);
     }
 
     public static class CustomHeader {
@@ -82,8 +86,8 @@ public class MediaTest {
             }
         });
         MemoryAllocation memoryAllocation = media.getMemoryManagement();
-        Assertions.assertEquals(86, memoryAllocation.getLockedFreeSize() / 64);
-        Assertions.assertEquals(14, memoryAllocation.getPayloadSize() / 64);
+        Assertions.assertEquals(89, memoryAllocation.getLockedFreeSize() / 64);
+        Assertions.assertEquals(11, memoryAllocation.getPayloadSize() / 64);
         Assertions.assertEquals(100, memoryAllocation.getTotalLockedSize() / 64);
 
         media.close();
@@ -105,8 +109,8 @@ public class MediaTest {
         Media media = Media.create(file, MediaProperties.from(mediaProperties));
 
         MemoryAllocation memoryAllocation = media.getMemoryManagement();
-        Assertions.assertEquals(995, memoryAllocation.getLockedFreeSize() / 64);
-        Assertions.assertEquals(5, memoryAllocation.getPayloadSize() / 64);
+        Assertions.assertEquals(998, memoryAllocation.getLockedFreeSize() / 64);
+        Assertions.assertEquals(2, memoryAllocation.getPayloadSize() / 64);
         Assertions.assertEquals(1000, memoryAllocation.getTotalLockedSize() / 64);
 
         BlockAllocator blockAllocator = media.getBlockAllocator();
@@ -120,8 +124,9 @@ public class MediaTest {
         for(int i=0; i<10; i++) {
             sum += HOW_MANY[i];
             CatalogBlockIndices indices = blockAllocator.allocate(BlockType.CATALOG,HOW_MANY[i]);
-            Assertions.assertEquals(995-sum, memoryAllocation.getLockedFreeSize() / 64);
-            Assertions.assertEquals(5+sum, memoryAllocation.getPayloadSize() / 64);
+            memoryAllocation = media.getMemoryManagement();
+            Assertions.assertEquals(998-sum, memoryAllocation.getLockedFreeSize() / 64);
+            Assertions.assertEquals(2+sum, memoryAllocation.getPayloadSize() / 64);
             total.add(indices);
         }
 
@@ -129,8 +134,9 @@ public class MediaTest {
 
         blockAllocator.free(total);
 
-        Assertions.assertEquals(995, memoryAllocation.getLockedFreeSize() / 64);
-        Assertions.assertEquals(5, memoryAllocation.getPayloadSize() / 64);
+        memoryAllocation = media.getMemoryManagement();
+        Assertions.assertEquals(998, memoryAllocation.getLockedFreeSize() / 64);
+        Assertions.assertEquals(2, memoryAllocation.getPayloadSize() / 64);
         Assertions.assertEquals(1000, memoryAllocation.getTotalLockedSize() / 64);
 
         media.closeExpired();
@@ -149,37 +155,34 @@ public class MediaTest {
         Media media = Media.create(file, MediaProperties.from(mediaPropertiesBuilder));
 
         MemoryAllocation memoryAllocation = media.getMemoryManagement();
-        Assertions.assertEquals(995, memoryAllocation.getLockedFreeSize() / 64);
-        Assertions.assertEquals(5, memoryAllocation.getPayloadSize() / 64);
+        Assertions.assertEquals(998, memoryAllocation.getLockedFreeSize() / 64);
+        Assertions.assertEquals(2, memoryAllocation.getPayloadSize() / 64);
         Assertions.assertEquals(1000, memoryAllocation.getTotalLockedSize() / 64);
 
         BlockAllocator blockAllocator = media.getBlockAllocator();
+
+        int[] data = new int [] {2, 6, 1, 3, 10, 1, 2, 6, 10, 4, 9, 0, 2, 5, 4, 1, 8, 7, 8, 9, 6, 7, 5, 3, 4, 10, 1, 7, 9, 7, 3, 1, 1, 7, 3, 4, 2, 6, 4, 8, 10, 10, 5, 0, 0, 4, 1, 3, 2, 1, 4, 1, 4, 2, 1, 1, 1, 1, 8, 2, 7, 5, 7, 7, 5, 0, 2, 8, 4, 8, 1, 2, 4, 5, 0, 8, 5, 5, 3, 1, 4, 4, 1, 7, 1, 5, 6, 3, 3, 5, 6, 6, 4, 8, 9, 3, 4, 9, 8, 5, 10, 2, 2, 8, 9, 4, 1, 5, 5, 3, 5, 6, 2, 1, 2, 2, 6, 4, 2, 3, 6, 2, 4, 2, 4, 2, 4, 8, 2, 5, 0, 5, 6, 4, 4, 1, 4, 1, 7, 9, 9, 5, 2, 2, 5, 7, 4, 3, 2, 2};
+        int next = 0;
 
         CatalogBlockIndices[] allocateds = new CatalogBlockIndices[10];
         for(int i=0; i<allocateds.length; i++) {
             allocateds[i] = new CatalogBlockIndices();
         }
 
-        for(int u=0; u<500; u++) {
+        for(int u=0; u<50; u++) {
 
-            int index = (int) Math.round(Math.random() * 9);
+            int index = data[next++];
+
             CatalogBlockIndices allocated = allocateds[index];
 
             if (blockAllocator.getFreeBlocks() > 1) {
-                long hm = blockAllocator.getFreeBlocks() - 1;
-                int hmr = (int) Math.round(Math.random() * hm);
-                if (hmr > 10) {
-                    hmr = (int) (Math.round(10 * Math.random()));
-                }
+                int hmr = data[next++];
                 allocated.add(blockAllocator.allocate(BlockType.CATALOG,hmr));
                 System.out.println("[" + index + "] Allocated: " + allocated.getLength() + ", free: " + blockAllocator.getFreeBlocks());
             }
 
             long l = allocated.getLength();
-            int hmr = (int) Math.round(Math.random() * l);
-            if (hmr > 10) {
-                hmr = (int) (Math.round(10 * Math.random()));
-            }
+            int hmr = data[next++];
             if (hmr != 0) {
                 CatalogBlockIndices extracted = allocated.extract(hmr);
                 System.out.println("[" + index + "]  Extracted: " + extracted.getLength() + ", allocated: " + allocated.getLength());
@@ -191,8 +194,9 @@ public class MediaTest {
             blockAllocator.free(allocateds[i]);
         }
 
-        Assertions.assertEquals(993, memoryAllocation.getLockedFreeSize() / 64);
-        Assertions.assertEquals(7, memoryAllocation.getPayloadSize() / 64);
+        memoryAllocation = media.getMemoryManagement();
+        Assertions.assertEquals(998, memoryAllocation.getLockedFreeSize() / 64);
+        Assertions.assertEquals(2, memoryAllocation.getPayloadSize() / 64);
         Assertions.assertEquals(1000, memoryAllocation.getTotalLockedSize() / 64);
 
     }

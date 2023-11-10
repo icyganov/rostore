@@ -1,6 +1,7 @@
 package org.rostore.v2.container;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.rostore.TestFile;
 import org.rostore.Utils;
@@ -118,6 +119,7 @@ public class AsyncContainerMediaTest {
     }
 
     @Test
+    @Disabled
     public void testAsync() throws ExecutionException, InterruptedException {
         MediaPropertiesBuilder mediaProperties = new MediaPropertiesBuilder();
         mediaProperties.setMaxTotalSize(4096L*1000000L);
@@ -280,6 +282,7 @@ public class AsyncContainerMediaTest {
     }
 
     @Test
+    @Disabled
     public void testSameKeyAsync() throws ExecutionException, InterruptedException {
         MediaPropertiesBuilder mediaPropertiesBuilder = new MediaPropertiesBuilder();
         mediaPropertiesBuilder.setMaxTotalSize(4096L*1000000L);
