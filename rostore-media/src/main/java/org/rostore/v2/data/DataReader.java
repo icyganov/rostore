@@ -154,8 +154,7 @@ public class DataReader extends InputStream implements Committable {
     }
 
     /**
-     *
-     * @return all blocks
+     * Executed block by block with its content
      */
     public void iterateIndices(final Consumer<CatalogBlockIndices> consumer) {
         current = internalBlockProvider.getBlockContainer().getBlock(root, BlockType.DATA);

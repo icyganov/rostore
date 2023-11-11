@@ -41,7 +41,7 @@ public class Utils {
 
     /**
      *
-     * @param eol unix time in seconds starting from {@link this#TTL_START}
+     * @param eol unix time in seconds starting from {@link #TTL_START}
      * @return ttl in seconds
      */
     public final static long eol2ttl(final long eol) {

@@ -147,7 +147,6 @@ public abstract class SequenceBlock implements Closeable {
 
     /**
      * Removes the current catalog block
-     * @return the block
      */
     public void delete() {
         throwExceptionIfInvalid("delete");
