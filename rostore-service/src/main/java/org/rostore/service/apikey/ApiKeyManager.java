@@ -97,7 +97,7 @@ public class ApiKeyManager {
             return ;
         }
         if (!storagePermissions.containsAll(requestPermissions)) {
-            throw new PermissionDeniedException("No access to the storage with set of permissions " + requestPermissions.toString());
+            throw new PermissionDeniedException("No access to the storage with set of permissions " + requestPermissions);
         }
     }
 

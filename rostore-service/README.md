@@ -27,6 +27,7 @@ You can use linux command uuidgen to generate the key in an easy way.
 
 > ROSTORE_ROOT_API_KEY=4e030824-08bf-4a0a-b6cb-bafa19406349
 > ROSTORE_PUBLIC_API_KEY=2fbce488-b62d-41e1-9eb7-edb01e58e2b0
+
 3. To start the rostore execute the following command:
    ```bash
    rostore start

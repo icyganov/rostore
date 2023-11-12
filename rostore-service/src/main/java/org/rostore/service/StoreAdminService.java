@@ -14,6 +14,7 @@ import org.rostore.entity.media.RoStoreProperties;
 import org.rostore.entity.media.Version;
 import org.rostore.service.apikey.ApiKeyManager;
 import org.rostore.entity.apikey.Permission;
+import org.rostore.service.apikey.PermissionDeniedException;
 import org.rostore.v2.container.async.AsyncContainerMediaProperties;
 import org.rostore.v2.media.MediaProperties;
 
@@ -82,9 +83,11 @@ public class StoreAdminService {
     @POST
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary="Creates a new store", description = "This operation can only start a root user")
+    @Operation(summary="Initializes a new store", description = "This operation can only start a root user")
     public Response initStore(final RoStoreProperties roStoreProperties) {
-        apiKeyManager.checkStorePermission(EnumSet.of(Permission.SUPER));
+        if (!apiKeyManager.isRootApiKey()) {
+            throw new PermissionDeniedException("This operation can only be executed with root api key.");
+        }
         final AsyncContainerMediaProperties asyncContainerMediaProperties = new AsyncContainerMediaProperties();
         asyncContainerMediaProperties.setMediaProperties(MediaProperties.from(roStoreProperties.getMediaProperties()));
         asyncContainerMediaProperties.setContainerListProperties(roStoreProperties.getContainerListProperties());
