@@ -13,7 +13,7 @@ if [ "$ROSTORE_HOME" != $(pwd) ]; then
   exit 1
 fi
 
-JAR_FILE="rostore-runner.jar"
+JAR_FILE="rostore-service.jar"
 CODE_BASE="$ROSTORE_HOME/"
 if [ -d "$ROSTORE_HOME/target" ]; then
   CODE_BASE="$ROSTORE_HOME/target/"

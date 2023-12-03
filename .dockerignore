@@ -1,4 +1,4 @@
 *
-!target/*-runner
-!target/*-runner.jar
+!target/*-service
+!target/*-service.jar
 !target/lib/*

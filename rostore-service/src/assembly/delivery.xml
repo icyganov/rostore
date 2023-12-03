@@ -28,7 +28,7 @@
             <directory>${project.build.directory}</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>rostore-runner.jar</include>
+                <include>rostore-service.jar</include>
                 <include>rostore-cli.jar</include>
                 <include>rostore-cli</include>
             </includes>

@@ -15,7 +15,7 @@ if not "%ROSTORE_HOME%" == "%CD%" (
   goto :error
 )
 
-set JAR_FILE=rostore-runner.jar
+set JAR_FILE=rostore-service.jar
 set "CODE_BASE=%ROSTORE_HOME%\"
 if exist "%ROSTORE_HOME%\target" set CODE_BASE="%ROSTORE_HOME%\target\"
 

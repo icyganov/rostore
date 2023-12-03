@@ -12,7 +12,7 @@ rsync -a rostore.properties $SERVER:/home/ilya
 ./rostore-remote.sh stop
 
 echo "Copy rostore file.."
-rsync -a ./target/rostore-runner.jar $SERVER:/home/ilya
+rsync -a ./target/rostore-service.jar $SERVER:/home/ilya
 rsync -a ./target/rostore-cli.jar $SERVER:/home/ilya
 rsync -a ./target/rostore-cli $SERVER:/home/ilya
 echo "Copy .zip bundle"
