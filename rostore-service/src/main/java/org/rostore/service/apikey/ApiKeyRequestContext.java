@@ -2,8 +2,8 @@ package org.rostore.service.apikey;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 @RequestScoped

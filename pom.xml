@@ -5,7 +5,7 @@
   <groupId>net.ro-store</groupId>
   <artifactId>rostore-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
 
   <name>RoStore Parent</name>
   <description>Fast and simple memory-mapped Key-Value store</description>

@@ -15,8 +15,8 @@ import org.rostore.service.*;
 import org.rostore.v2.container.async.AsyncContainer;
 import org.rostore.entity.StringKeyList;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.*;
 
 @Startup

@@ -1,6 +1,6 @@
 package org.rostore.service;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 public class NotFoundException extends RoStoreServiceException {
     public NotFoundException(final String message) {

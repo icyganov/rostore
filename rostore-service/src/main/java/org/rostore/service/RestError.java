@@ -6,8 +6,8 @@ import org.rostore.v2.container.async.AsyncException;
 import org.rostore.v2.container.async.OperationExecutionException;
 import org.rostore.v2.container.async.OperationExecutionRuntimeException;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

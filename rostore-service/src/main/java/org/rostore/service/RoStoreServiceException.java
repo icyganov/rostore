@@ -2,7 +2,7 @@ package org.rostore.service;
 
 import org.rostore.entity.RoStoreException;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 public class RoStoreServiceException extends RoStoreException {
 
