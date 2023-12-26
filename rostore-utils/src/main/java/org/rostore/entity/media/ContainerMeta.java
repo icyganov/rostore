@@ -34,6 +34,10 @@ public class ContainerMeta {
         return maxTTL;
     }
 
+    /**
+     * Sets maximum TTL of the container key
+     * @param maxTTL in seconds
+     */
     public void setMaxTTL(long maxTTL) {
         this.maxTTL = maxTTL;
     }

@@ -5,7 +5,7 @@
   <groupId>net.ro-store</groupId>
   <artifactId>rostore-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0</version>
+  <version>2.0.1-SNAPSHOT</version>
 
   <name>RoStore Parent</name>
   <description>Fast and simple memory-mapped Key-Value store</description>
@@ -147,8 +147,8 @@
                     <arg>--pinentry-mode</arg>
                     <arg>loopback</arg>
                   </gpgArguments>
-                  <keyname>A68BD169F4B1F1C0025B1F522818A119DB7034FB</keyname>
-                  <passphraseServerId>A68BD169F4B1F1C0025B1F522818A119DB7034FB</passphraseServerId>
+                  <keyname>54620E42E29C9D8A0806E606E029FF5AD5497321</keyname>
+                  <passphraseServerId>54620E42E29C9D8A0806E606E029FF5AD5497321</passphraseServerId>
                 </configuration>
               </execution>
             </executions>

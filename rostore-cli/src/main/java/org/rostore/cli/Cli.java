@@ -10,6 +10,7 @@ import org.rostore.entity.media.RecordOption;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +70,7 @@ public class Cli {
     private static Options options() {
         Options options = new Options();
         options.addOption("p", "profile", true, "specify main profile (profile in .store directory or a plain file)");
-        options.addOption("mt", "max-ttl", true, "specify max ttl for container creation");
+        options.addOption("mt", "max-ttl", true, "specify max ttl for container creation in java duration format");
         options.addOption("ms", "max-size", true, "specify max size for container creation");
         options.addOption("sn", "shard-number", true, "specify shard number for container creation");
         options.addOption("tp", "target-profile", true, "specify target profile (profile in .store directory or a plain file)");
@@ -233,7 +234,7 @@ public class Cli {
             maxSize = Long.parseLong(cmd.getOptionValue("ms"));
         }
         if (cmd.hasOption("mt")) {
-            maxTTL = Long.parseLong(cmd.getOptionValue("mt"));
+            maxTTL = Duration.parse(cmd.getOptionValue("mt")).getSeconds();
         }
         if (cmd.hasOption("sn")) {
             shardNumber = Integer.parseInt(cmd.getOptionValue("sn"));
@@ -247,7 +248,7 @@ public class Cli {
                 print(" maxSize:     unlimited");
             }
             if (cmd.hasOption("mt")) {
-                print(" maxTTL:      " + maxTTL);
+                print(" maxTTL:      " + maxTTL + "s");
             } else {
                 print(" maxTTL:      unlimited");
             }
