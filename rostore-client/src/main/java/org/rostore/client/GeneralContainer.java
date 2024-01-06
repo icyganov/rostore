@@ -230,7 +230,7 @@ public class GeneralContainer<K> {
 
     public <V> VersionedObject<K,V> getWrapped(final K key,
                                         final EnumSet<RecordOption> options,
-                                        final Function<VersionedObject<K,InputStream>, VersionedObject<K,V>> consumer) {
+                                        final Function<VersionedObject<K,InputStream>, VersionedObject<K,V>> transformation) {
         final RequestProperties rp = roStoreClient.create(getKeyPath(key));
         rp.contentType(ContentType.BINARY.getMediaType());
         rp.options(options);
@@ -238,7 +238,7 @@ public class GeneralContainer<K> {
             final Long version = RoStoreClient.getVersionHeader(response);
             final Long unixEOL = roStoreClient.getEOLHeader(response);
             final VersionedObject<K,InputStream> versionedObject = VersionedObject.create(key, RoStoreClient.getInputStream(response), version, unixEOL);
-            return consumer.apply(versionedObject);
+            return transformation.apply(versionedObject);
         });
     }
 
