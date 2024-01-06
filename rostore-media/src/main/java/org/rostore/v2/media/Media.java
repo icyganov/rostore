@@ -233,7 +233,7 @@ public class Media extends RootClosableImpl {
     }
 
     /**
-     * The Block container must be closed afterwards
+     * The Block container must be closed after wards
      * @return
      */
     public synchronized BlockContainer newBlockContainer() {

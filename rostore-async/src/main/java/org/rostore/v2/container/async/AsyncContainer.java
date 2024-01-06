@@ -19,6 +19,9 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * A representation of the rostore container.
+ */
 public class AsyncContainer implements Closeable {
     private final Container container;
     private final List<ContainerShardExecutor> containerShardExecutors;
@@ -118,49 +121,131 @@ public class AsyncContainer implements Closeable {
         }
     }
 
-    public <T extends InputStream> void put(final int sessionId, final byte[] key, final AsyncStream<T> data, final Record record) {
-        putAsync(sessionId, key, data, record);
+    /**
+     * Puts a key-value pair to the container
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param valueStream the stream with the value data
+     * @param record the properties of the key-value pair (ttl, options, versions)
+     * @param <T> the type of the data
+     */
+    public <T extends InputStream> void put(final int sessionId, final byte[] key, final AsyncStream<T> valueStream, final Record record) {
+        putAsync(sessionId, key, valueStream, record);
     }
 
-    public <T> void put(final int sessionId, final byte[] key, final T data, final Record record) {
-        put(sessionId, key, (outputStream) -> BinaryMapper.serialize(container.getContainerListOperations().getMedia().getMediaProperties().getMapperProperties(), data, outputStream), record);
+    /**
+     * Puts a key-value pair to container
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param value the value object, that will be deserialized by {@link BinaryMapper}
+     * @param record the properties of the key-value pair (ttl, options, versions)
+     * @param <T> the type of the data
+     */
+    public <T> void put(final int sessionId, final byte[] key, final T value, final Record record) {
+        put(sessionId, key, (outputStream) -> BinaryMapper.serialize(container.getContainerListOperations().getMedia().getMediaProperties().getMapperProperties(), value, outputStream), record);
     }
 
-    public <T> Record put(final int sessionId, final String key, final T data) {
+    /**
+     * Puts a key-value pair to container.
+     *
+     * <p>The version is set to 0 (non-versioned), ttl is set to 0 (eternal)</p>
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param value the value object, that will be deserialized by {@link BinaryMapper}
+     * @param <T> the type of the data
+     */
+    public <T> Record put(final int sessionId, final String key, final T value) {
         final Record record = new Record();
-        put(sessionId, key, data, record);
+        put(sessionId, key, value, record);
         return record;
     }
 
-    public <T> void put(final int sessionId, final String key, final T data, Record record) {
-        put(sessionId, key.getBytes(StandardCharsets.UTF_8), data, record);
+    /**
+     * Puts a key-value pair to container.
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param value the value object, that will be deserialized by {@link BinaryMapper}
+     * @param record the properties of the key-value pair (ttl, options, versions)
+     * @param <T> the type of the data
+     */
+    public <T> void put(final int sessionId, final String key, final T value, Record record) {
+        put(sessionId, key.getBytes(StandardCharsets.UTF_8), value, record);
     }
 
-    public <T> Record put(final int sessionId, final String key, Consumer<OutputStream> serializer) {
-        return put(sessionId, key.getBytes(StandardCharsets.UTF_8), serializer);
+    /**
+     * Puts a key-value pair to container.
+     *
+     * <p>The version is set to 0 (non-versioned), ttl is set to 0 (eternal)</p>
+     *
+     * @param sessionId the id of the session
+     * @param key the key string
+     * @param valueOutputStream a consumer that should provide an OutputStream with the value
+     */
+    public Record put(final int sessionId, final String key, Consumer<OutputStream> valueOutputStream) {
+        return put(sessionId, key.getBytes(StandardCharsets.UTF_8), valueOutputStream);
     }
 
-    public Record put(final int sessionId, final byte[] key, Consumer<OutputStream> serializer) {
+    /**
+     * Puts a key-value pair to container.
+     *
+     * <p>The version is set to 0 (non-versioned), ttl is set to 0 (eternal)</p>
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param valueOutputStream a consumer that should provide an OutputStream with the value
+     */
+    public Record put(final int sessionId, final byte[] key, Consumer<OutputStream> valueOutputStream) {
         final Record record = new Record();
-        put(sessionId, key, serializer, record);
+        put(sessionId, key, valueOutputStream, record);
         return record;
     }
 
-    public void put(final int sessionId, final byte[] key, Consumer<OutputStream> serializer, Record record) {
+    /**
+     * Puts a key-value pair to container.
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param valueOutputStream a consumer that should provide an OutputStream with the value
+     * @param record the properties of the key-value pair (ttl, options, versions)
+     */
+    public void put(final int sessionId, final byte[] key, Consumer<OutputStream> valueOutputStream, Record record) {
         try (final PipedOutputStream pipedOutputStream = new PipedOutputStream()) {
             final PipedInputStream pipedInputStream = new PipedInputStream(pipedOutputStream);
             final AsyncStream<PipedInputStream> asyncStream = AsyncStream.wrap(pipedInputStream);
             putAsync(sessionId, key, asyncStream, record);
-            serializer.accept(pipedOutputStream);
+            valueOutputStream.accept(pipedOutputStream);
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new RoStoreException("Problem in the piped output", e);
         }
     }
 
+    /**
+     * Puts a key-value pair to container.
+     *
+     * <p>The version is set to 0 (non-versioned), ttl is set to 0 (eternal)</p>
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param asyncStream an async stream on the basis of InputStream to read from
+     * @param <T> the subtype of the InputStream to read value
+     */
     public <T extends InputStream> void putAsync(final int sessionId, final byte[] key, final AsyncStream<T> asyncStream) {
         putAsync(sessionId, key, asyncStream, new Record());
     }
 
+    /**
+     * Puts a key-value pair to container.
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param asyncStream an async stream on the basis of InputStream to read from
+     * @param record the properties of the key-value pair (ttl, options, versions)
+     * @param <T> the subtype of the InputStream to read value
+     */
     public <T extends InputStream> void putAsync(final int sessionId, final byte[] key, final AsyncStream<T> asyncStream, final Record record) {
         final ContainerShardExecutor shardExecutor = getShardExecutorByKey(key);
         shardExecutor.executeValue(sessionId, OperationType.WRITE, 0, true,
@@ -201,6 +286,14 @@ public class AsyncContainer implements Closeable {
         );
     }
 
+    /**
+     * Gets a value based on key from container.
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param asyncStream an async stream on the basis of OutputStream to read the value from
+     * @param <T> the subtype of the OutputStream to read value
+     */
     public <T extends OutputStream> void getAsync(final int sessionId, final byte[] key, final AsyncStream<T> asyncStream) {
         ContainerShardExecutor shardExecutor = getShardExecutorByKey(key);
         shardExecutor.executeKey(sessionId, OperationType.READ, true, (ops) -> {
@@ -231,15 +324,42 @@ public class AsyncContainer implements Closeable {
         });
     }
 
+    /**
+     * Gets a value based on key from container.
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param clazz an expected class of the value object
+     * @param <T> the value class
+     * @return the value transformed by {@link BinaryMapper}
+     */
     public <T> DataWithRecord<T> get(final int sessionId, final byte[] key, final Class<T> clazz) {
         return get(sessionId, key, (inputStream) -> BinaryMapper.deserialize(container.getContainerListOperations().getMedia().getMediaProperties().getMapperProperties(), clazz, inputStream));
     }
 
+    /**
+     * Gets a value based on key from container.
+     *
+     * @param sessionId the id of the session
+     * @param key the key string
+     * @param clazz an expected class of the value object
+     * @return the value transformed by {@link BinaryMapper}
+     * @param <T> the value class
+     */
     public <T> DataWithRecord<T> get(final int sessionId, final String key, final Class<T> clazz) {
         return get(sessionId, key.getBytes(StandardCharsets.UTF_8), clazz);
     }
 
-    public <T> DataWithRecord<T> get(final int sessionId, final byte[] key, final Function<InputStream,T> deserializer) {
+    /**
+     * Gets a value based on key from container.
+     *
+     * @param sessionId the id of the session
+     * @param key the key data
+     * @param valueDeserializer a function that transforms the value input stream to the java object
+     * @param <T> the value class
+     * @return the value transformed by the supplied deserializer
+     */
+    public <T> DataWithRecord<T> get(final int sessionId, final byte[] key, final Function<InputStream,T> valueDeserializer) {
         final T data;
         try (final PipedOutputStream pos = new PipedOutputStream()) {
             final PipedInputStream pipedInputStream = new PipedInputStream(pos);
@@ -261,17 +381,37 @@ public class AsyncContainer implements Closeable {
             if (storedRecord[0] == null) {
                 return null;
             }
-            data = deserializer.apply(pipedInputStream);
+            data = valueDeserializer.apply(pipedInputStream);
             return new DataWithRecord(storedRecord[0], data);
         } catch (final IOException ioException) {
             throw new RoStoreException("Can't create a piped outputStream");
         }
     }
 
+    /**
+     * List the keys in the container
+     *
+     * @param sessionId the session id
+     * @param startWithKey prefix of the keys to return
+     * @param continuationKey the key to start with (used for pagination)
+     * @param maxNumber the maximum number of entries to return
+     * @param maxSize the maximum size of the returned list
+     * @return a list of keys
+     */
     public KeyList list(final int sessionId, final byte[] startWithKey, final byte[] continuationKey, int maxNumber, int maxSize) {
         return resolveFuture(listAsync(sessionId, startWithKey, continuationKey, maxNumber, maxSize));
     }
 
+    /**
+     * List the keys in the container
+     *
+     * @param sessionId the session id
+     * @param startWithKey prefix of the keys to return
+     * @param continuationKey the key to start with (used for pagination)
+     * @param maxNumber the maximum number of entries to return
+     * @param maxSize the maximum size of the returned list
+     * @return a list of keys
+     */
     public StringKeyList list(final int sessionId, final String startWithKey, final String continuationKey, int maxNumber, int maxSize) {
         return new StringKeyList(resolveFuture(listAsync(sessionId,
                 startWithKey != null ? startWithKey.getBytes(StandardCharsets.UTF_8) : null,
@@ -280,6 +420,16 @@ public class AsyncContainer implements Closeable {
                 maxSize)));
     }
 
+    /**
+     * List the keys in the container
+     *
+     * @param sessionId the session id
+     * @param startWithKey prefix of the keys to return
+     * @param continuationKey the key to start with (used for pagination)
+     * @param maxNumber the maximum number of entries to return
+     * @param maxSize the maximum size of the returned list
+     * @return a future to return the list of keys
+     */
     public Future<KeyList> listAsync(final int sessionId, final byte[] startWithKey, final byte[] continuationKey, int maxNumber, int maxSize) {
         return asyncContainers.getExecutorService().submit(() -> {
              KeyList result = new KeyList();
@@ -317,18 +467,47 @@ public class AsyncContainer implements Closeable {
         });
     }
 
+    /**
+     * Delete a key if one exists
+     *
+     * @param sessionId the session id
+     * @param key the key binary
+     * @param record metadata, mainly for options and version
+     * @return {@code true} if deletion has been successfully executed
+     */
     public boolean remove(final int sessionId, final byte[] key, Record record) {
         return resolveFuture(removeAsync(sessionId, key, record));
     }
 
+    /**
+     * Delete a key if one exists
+     *
+     * @param sessionId the session id
+     * @param key the key binary
+     * @return {@code true} if deletion has been successfully executed
+     */
     public boolean remove(final int sessionId, final String key) {
         return remove(sessionId, key, new Record());
     }
 
+    /**
+     * Delete a key if one exists
+     *
+     * @param sessionId the session id
+     * @param key the key string
+     * @return {@code true} if deletion has been successfully executed
+     */
     public boolean remove(final int sessionId, final String key, Record record) {
         return remove(sessionId, key.getBytes(StandardCharsets.UTF_8), record);
     }
 
+    /**
+     * Delete a key if one exists
+     *
+     * @param sessionId the session id
+     * @param key the key's binary
+     * @return a future for boolean, {@code true} if deletion has been successfully executed
+     */
     public Future<Boolean> removeAsync(final int sessionId, final byte[] key, final Record record) {
         final ContainerShardExecutor shardExecutor = getShardExecutorByKey(key);
         return shardExecutor.executeKey(sessionId, OperationType.DELETE, true, (ops) -> {

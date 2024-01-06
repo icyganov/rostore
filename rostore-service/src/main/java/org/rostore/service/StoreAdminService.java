@@ -75,7 +75,7 @@ public class StoreAdminService {
     @GET
     @Path("/version")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary="Get version", description = "This operation can only start a root user")
+    @Operation(summary="Get version", description = "This operation is not protected")
     public Response version() {
         return Response.ok(version).build();
     }
