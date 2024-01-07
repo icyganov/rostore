@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.util.function.Consumer;
 
 /**
+ * This is a counterpart of {@link DataWriter}, that allows to read the data from the storage that
+ * has been previously written by the writer.
  * Is not thread-safe
  */
 public class DataReader extends InputStream implements Committable {
@@ -38,10 +40,12 @@ public class DataReader extends InputStream implements Committable {
     // next block
 
     // nth block
+    // --------------------------
     // (data)
     // next block
 
     // last block
+    // --------------------------
     // (data)
     // length
 
@@ -51,10 +55,29 @@ public class DataReader extends InputStream implements Committable {
     // length
     // next block == itself
 
+    /**
+     * Opens the data reader to start reading from the given block.
+     * <p>The data reader should not be used to free the blocks {@link #free()}, as it will
+     * use the root allocator for it.</p>
+     *
+     * @param media the media to be used
+     * @param startIndex the first block to start reading from
+     * @return the data reader object
+     */
     public static DataReader open(final Media media, final long startIndex) {
         return new DataReader(BlockProviderImpl.internal(media), startIndex);
     }
 
+    /**
+     * Opens the data reader to start reading from the given block.
+     * <p>This is a more specific operation comparing to {@link #open(Media, long)}, as
+     * it specifies a specific allocator, and not the root's one.</p>
+     * <p>The {@link #free()} can be executed.</p>
+     *
+     * @param allocator allocator to be used
+     * @param startIndex the first block to start reading from
+     * @return the data reader object
+     */
     public static DataReader open(final BlockAllocator allocator, final long startIndex) {
         return new DataReader(BlockProviderImpl.internal(allocator), startIndex);
     }
@@ -75,6 +98,13 @@ public class DataReader extends InputStream implements Committable {
         }
     }
 
+    /**
+     * Reads the data from the sequence starting at start index and writes it to the output stream.
+     * @param media the media to read from
+     * @param startIndex the first block index
+     * @param outputStream the output stream to write to
+     * @param <T> the subtype of the output stream
+     */
     public static <T extends OutputStream> void toOutputStream(final Media media, final long startIndex, final T outputStream) {
         try (final DataReader dr = DataReader.open(media, startIndex)) {
             dr.transferTo(outputStream);
@@ -110,6 +140,14 @@ public class DataReader extends InputStream implements Committable {
         current.position(0);
     }
 
+    /**
+     * Reads the java object from the data reader.
+     * <p>The function uses {@link BinaryMapper} to deserialize the object.</p>
+     *
+     * @param clazz the class of the java object
+     * @return the java object
+     * @param <T> the type of the object
+     */
     public <T> T readObject(final Class<T> clazz) {
         return BinaryMapper.deserialize(internalBlockProvider.getMedia().getMediaProperties().getMapperProperties(), clazz, this);
     }
@@ -147,6 +185,11 @@ public class DataReader extends InputStream implements Committable {
         return current.getByte() & 0xff;
     }
 
+    /**
+     * Operation is to free the blocks that has previously been allocated by the {@link DataWriter}.
+     * <p>Note, that the {@link BlockAllocator} should be correctly provided {@link #open(BlockAllocator, long)}.</p>
+     * <p>If the {@link #open(Media, long)} is used, the root allocator will be used.</p>
+     */
     public void free() {
         iterateIndices(catalogBlockIndices -> {
             internalBlockProvider.getBlockAllocator().free(catalogBlockIndices);
@@ -154,7 +197,8 @@ public class DataReader extends InputStream implements Committable {
     }
 
     /**
-     * Executed block by block with its content
+     * Executed block by block with its content.
+     * <p>For the very long data sequences, it might be called several times.</p>
      */
     public void iterateIndices(final Consumer<CatalogBlockIndices> consumer) {
         current = internalBlockProvider.getBlockContainer().getBlock(root, BlockType.DATA);

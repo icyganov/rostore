@@ -10,7 +10,9 @@ import org.rostore.v2.data.DataWriter;
 import org.rostore.v2.keys.KeyBlockOperations;
 import org.rostore.v2.keys.KeyList;
 import org.rostore.v2.keys.RecordLengths;
+import org.rostore.v2.media.Closeable;
 import org.rostore.v2.media.Media;
+import org.rostore.v2.media.block.container.Status;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -21,7 +23,18 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class ContainerListOperations {
+/**
+ * This is the major class to manage the containers on the rostore.
+ * <p>Note that containers are optional components are are not stored on the {@link Media} per default.</p>
+ * <p>If containers are required, this class should be created and made persisted on the media. For
+ * this the header stored on the media can be modified.</p>
+ * <p>To create the containers on the media the {@link #ContainerListOperations(Media, ContainerListProperties)} should be executed.</p>
+ * <p>This method will create the {@link ContainerListHeader}, which should be persisted on the {@link Media}.</p>
+ * <p>When the {@link Media} is opened, the {@link ContainerListOperations} can be recreated again if the
+ * stored {@link ContainerListHeader} is provided to the {@link #ContainerListOperations(Media, ContainerListHeader)},
+ * which will reopen the containers in the form as they've been persisted.</p>
+ */
+public class ContainerListOperations implements AutoCloseable {
 
     private final ContainerListHeader containerListHeader;
 
@@ -56,6 +69,7 @@ public class ContainerListOperations {
         }
     }
 
+    @Override
     public void close() {
         for(Map.Entry<String, Container> entry : openedContainers.entrySet()) {
             entry.getValue().close();

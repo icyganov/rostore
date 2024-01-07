@@ -8,6 +8,7 @@ import org.rostore.v2.data.DataWriter;
 import org.rostore.v2.keys.KeyBlockOperations;
 import org.rostore.v2.keys.RecordLengths;
 import org.rostore.v2.media.Closeable;
+import org.rostore.v2.media.Media;
 import org.rostore.v2.media.block.allocator.BlockAllocator;
 import org.rostore.v2.media.block.container.Status;
 
@@ -19,6 +20,17 @@ import java.util.List;
 import java.util.Queue;
 import java.util.function.Function;
 
+/**
+ * Container Shards ar independent portion of the Container, that have its own {@link BlockAllocator}
+ * and independent set of keys. The user of the container should implement a function that
+ * determines which shard should be used. Typically, some sort of hash function that splits
+ * the space of the keys can be applied to partition it into the shards.
+ * <p>Container itself does not provide functionality of that kind and only
+ * offers the access to the shards.</p>
+ * <p>The shards are using their own {@link BlockAllocator}, which allows the independent allocation of the
+ * blocks and also allows to remove the shard without knowing of its internal structure. Everything
+ * stored with this allocator can be removed when the allocator is removed.</p>
+ */
 public class ContainerShard implements Closeable {
 
     private final Container container;
@@ -54,18 +66,33 @@ public class ContainerShard implements Closeable {
         return container;
     }
 
-    public static ContainerShard open(final Container container, final int index, final ContainerShardDescriptor containerShardDescriptor) {
+    /**
+     * Opens a shard of the container
+     *
+     * @param container the parent container
+     * @param index the index of the shard
+     * @param containerShardDescriptor the information about properties of the shard (should be retrieved from the underlying media)
+     * @return the shard object
+     */
+    protected static ContainerShard open(final Container container, final int index, final ContainerShardDescriptor containerShardDescriptor) {
         return new ContainerShard(container, index, containerShardDescriptor);
     }
 
-    public static ContainerShard create(final Container container, final int index) {
+    /**
+     * Creates a new shard in the storage
+     *
+     * <p>As the shard requires its own resources, the {@link Media#getBlockAllocator()} is used to create the obtain them.</p>
+     *
+     * @param container the parent container
+     * @param index the index if the shard
+     * @return the shard object
+     */
+    protected static ContainerShard create(final Container container, final int index) {
         return new ContainerShard(container, index);
     }
 
     /**
-     * Loader
-     * @param container
-     * @param descriptor
+     * Loader.
      */
     private ContainerShard(final Container container, final int index, final ContainerShardDescriptor descriptor) {
         this.container = container;
@@ -83,9 +110,6 @@ public class ContainerShard implements Closeable {
 
     /**
      * Creator
-     * @param index
-     * @param container
-     * @param index
      */
     private ContainerShard(final Container container, final int index) {
         this.index = index;
@@ -103,14 +127,31 @@ public class ContainerShard implements Closeable {
         return shardAllocator.getMemoryAllocation();
     }
 
+    /**
+     * Function to store the body of the value, using the shard's allocator
+     *
+     * @param data the data to be stored
+     * @return the block index where the data is stored
+     * @param <T> the type of the input stream
+     */
     public <T extends InputStream> long putValue(final T data) {
         return DataWriter.fromInputStream(shardAllocator, data);
     }
 
+    /**
+     * Function to store the body of the value, using the shard's allocator
+     * @param record the record information to retrieve the block where the data starts
+     * @param outputStream the stream to put the data to
+     * @param <T> the type of the output stream
+     */
     public <T extends OutputStream> void getValue(final Record record, final T outputStream) {
         DataReader.toOutputStream(shardAllocator.getMedia(), record.getId(), outputStream);
     }
 
+    /**
+     * Function to remove the value from the shard's allocator and free the blocks used by it
+     * @param id the block index where the data starts
+     */
     public void removeValue(final long id) {
         try (final DataReader dataReader = DataReader.open(shardAllocator, id)) {
             dataReader.free();
@@ -125,6 +166,9 @@ public class ContainerShard implements Closeable {
         return "Shard: index=" + index;
     }
 
+    /**
+     * Removes all the data associated with the shard
+     */
     public void remove() {
         if (!used.isEmpty()) {
             throw new RoStoreException("Can't remove the shard as it is in use");

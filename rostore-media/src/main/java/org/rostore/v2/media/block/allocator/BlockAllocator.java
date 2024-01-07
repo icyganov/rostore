@@ -8,16 +8,20 @@ import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.container.Status;
 
 /**
- * This interface allows to allocate and free blocks
+ * This interface allows to allocate and free blocks.
+ *
+ * <p>There are two types of the allocators: root and secondary.</p>
+ * <p>Root one allocates and frees on the storage level and used to manage all the blocks in the storage,
+ * where as the secondary can be created to manage some groups of blocks. All the blocks allocated
+ * over the secondary one can be freed easily.</p>
  */
 public class BlockAllocator implements Closeable {
 
     private final BlockAllocatorInternal blockAllocatorInternal;
 
     /**
-     * Used to identify the allocator
+     * Used to identify the allocator, e.g. in logs. It has no any further meaning.
      */
-
     public String getName() {
         return blockAllocatorInternal.getName();
     }

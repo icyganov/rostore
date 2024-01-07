@@ -38,7 +38,7 @@ public class ContainerShardKeyOperations implements Committable {
     private final KeyBlockOperations keyBlockOperations;
 
     /**
-     * Creates an instance for the shard.
+     * Creates an instance for the shard's operations.
      */
     public ContainerShardKeyOperations(final ContainerShard containerShard) {
         this.containerShard = containerShard;

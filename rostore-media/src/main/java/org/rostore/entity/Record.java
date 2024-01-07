@@ -6,6 +6,14 @@ import org.rostore.entity.media.RecordOption;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * Record describes the payload associated with the key in the storage.
+ * <p>It contains the metadata like TTL, version and id.</p>
+ * <p>id is an arbitrary long, but is usually used to reference the
+ * block index where the value is stored.</p>
+ * <p>Record also contains the set of options that should be considered on
+ * the key-specific operations.</p>
+ */
 public class Record {
 
     private long id = Utils.ID_UNDEFINED;
@@ -13,6 +21,13 @@ public class Record {
     private long version = Utils.VERSION_UNDEFINED;
     private Set<RecordOption> options = EnumSet.noneOf(RecordOption.class);
 
+    /**
+     * Creates a record based on ttl or unixEol provided.
+     * <p>This is a helper function and can be used in the situations when either/or of these to parametrrs are given.</p>
+     * @param ttl a ttl - time to live or {@code null}
+     * @param unixEol a unix timestamp until this record should be valid
+     * @return the record object
+     */
     public Record ttlOrUnitEol(final Long ttl, final Long unixEol) {
         if (unixEol != null) {
             this.eol = Utils.unixEol2eol(unixEol);
@@ -29,10 +44,20 @@ public class Record {
         return this;
     }
 
+    /**
+     * The Id associated with the key-value pair.
+     *
+     * @return
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Sets the id to be stored with the record.
+     * @param id the id
+     * @return the recocd object
+     */
     public Record id(long id) {
         this.id = id;
         return this;

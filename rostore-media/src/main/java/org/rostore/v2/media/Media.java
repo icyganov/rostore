@@ -133,7 +133,7 @@ public class Media extends RootClosableImpl {
             mediaProperties = MediaProperties.from(mediaPropertiesBuilder);
             rootBlockAllocator = RootBlockAllocator.load(this);
 
-            try (final DataReader dataReader = DataReader.open(this, 0)) {
+            try (final DataReader dataReader = DataReader.open(rootBlockAllocator, 0)) {
                 final MediaHeader mediaHeader = dataReader.readObject(MediaHeader.class);
                 if (MAGIC != mediaHeader.getMagic()) {
                     throw new RoStoreException("File " + file + " has a wrong structure");
