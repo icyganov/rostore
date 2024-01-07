@@ -13,7 +13,9 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
- * Represents a simple rostore container
+ * Represents a simple rostore container.
+ *
+ * <p>Create this object by using the {@link RoStoreClient#getGeneralContainer(String)}</p>
  *
  * @param <K> key type
  */
@@ -111,7 +113,7 @@ public class GeneralContainer<K> {
      * @param keyExpirationUpdateFunction function that defines the expiration of the key or null, if the update should use the expiration used in the original orbject
      * @param updateFunction function that updates the value's object
      * @param serializer transforms the value's object to the input stream
-     * @param deserializer
+     * @param deserializer transforms input stream to the value object
      * @return an updated object
      * @param <V>
      */

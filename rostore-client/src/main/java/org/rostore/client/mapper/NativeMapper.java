@@ -18,21 +18,32 @@ public class NativeMapper implements Mapper {
         return mapperProperties;
     }
 
-    public <K,V> InputStream fromObject(final V object, final K key) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <K,V> InputStream fromObject(final V value, final K key) {
         final ByteArrayOutputStream byos = new ByteArrayOutputStream();
-        org.rostore.mapper.BinaryMapper.serialize(mapperProperties, object, object.getClass(), byos);
+        org.rostore.mapper.BinaryMapper.serialize(mapperProperties, value, value.getClass(), byos);
         byte[] data = byos.toByteArray();
         return new ByteArrayInputStream(data);
     }
 
-    public <K,V> V toObject(final InputStream inputStream, final Class<V> clazz, final K key) {
-        return org.rostore.mapper.BinaryMapper.deserialize(mapperProperties, clazz, inputStream);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <K,V> V toObject(final InputStream inputStream, final Class<V> valueClass, final K key) {
+        return org.rostore.mapper.BinaryMapper.deserialize(mapperProperties, valueClass, inputStream);
     }
 
     public NativeMapper(final MapperProperties mapperProperties) {
         this.mapperProperties = mapperProperties;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentType getContentType() {
         return ContentType.BINARY;

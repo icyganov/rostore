@@ -17,10 +17,13 @@ public class JsonMapper implements Mapper {
         this.objectMapper = objectMapper;
     }
 
-    public <K,V> InputStream fromObject(final V object, final K key) {
+    /**
+     * {@inheritDoc}
+     */
+    public <K,V> InputStream fromObject(final V value, final K key) {
         try {
             final ByteArrayOutputStream byos = new ByteArrayOutputStream();
-            objectMapper.writeValue(byos, object);
+            objectMapper.writeValue(byos, value);
             byte[] data = byos.toByteArray();
             return new ByteArrayInputStream(data);
         } catch (IOException e) {
@@ -28,14 +31,20 @@ public class JsonMapper implements Mapper {
         }
     }
 
-    public <K,V> V toObject(final InputStream inputStream, final Class<V> clazz, final K key) {
+    /**
+     * {@inheritDoc}
+     */
+    public <K,V> V toObject(final InputStream inputStream, final Class<V> valueClass, final K key) {
         try {
-            return objectMapper.readValue(new InputStreamReader(inputStream), clazz);
+            return objectMapper.readValue(new InputStreamReader(inputStream), valueClass);
         } catch (final IOException e) {
             throw new ClientException("Exception while deserializing object with key=\"" + key + "\".", null, e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentType getContentType() {
         return ContentType.JSON;

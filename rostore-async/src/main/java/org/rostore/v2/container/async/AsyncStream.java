@@ -7,6 +7,19 @@ import org.rostore.entity.StreamProcessingException;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
+/**
+ * This class is a wrapper around the stream (input or output).
+ *
+ * <p>It is handy to observe and steer the long-running operation of network
+ * stream processing.</p>
+ * <p>It has a status model, reflected in {@link AsyncStatus}, as well as a set of listeners
+ * that will be notified on different events around the stream processing: status transition
+ * and {@link Record} updates during processing of the stream.</p>
+ * <p>The client can wait of the blocking variant of this stream (e.g. {@link #wrapBlocking(AutoCloseable)}).</p>
+ * <p>The stream processing can also be canceled (see {@link #cancel(boolean)}).</p>
+ *
+ * @param <S> the stream that this object is wrapped around.
+ */
 public class AsyncStream<S extends AutoCloseable> implements AutoCloseable, Future<S> {
 
     private final S stream;
@@ -73,6 +86,11 @@ public class AsyncStream<S extends AutoCloseable> implements AutoCloseable, Futu
         }
     }
 
+    /**
+     * Called by the internal processing logic in case any error occurs during processing
+     *
+     * @param e the exception experienced
+     */
     public void fail(final Exception e) {
         status = AsyncStatus.ERROR;
         if (asyncListener != null) {
@@ -93,6 +111,14 @@ public class AsyncStream<S extends AutoCloseable> implements AutoCloseable, Futu
         }
     }
 
+    /**
+     * Cancels the processing of the stream.
+     * @param b {@code true} if the thread
+     * executing this task should be interrupted (if the thread is
+     * known to the implementation); otherwise, in-progress tasks are
+     * allowed to complete
+     * @return always true
+     */
     @Override
     public boolean cancel(boolean b) {
         this.status = AsyncStatus.CANCELED;

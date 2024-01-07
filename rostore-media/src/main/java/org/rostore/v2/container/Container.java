@@ -11,6 +11,11 @@ import org.rostore.v2.media.block.container.Status;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Container class to manage access to the set of keys and their values.
+ *
+ * <p>This class combines several shards </p>
+ */
 public class Container implements Closeable {
 
     private static final Logger logger = Logger.getLogger(Container.class.getName());
@@ -31,10 +36,20 @@ public class Container implements Closeable {
         return memoryAllocationState;
     }
 
+    /**
+     * The name of the container.
+     *
+     * @return the name of the container
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * The container descriptor defines the persistence model of the container.
+     *
+     * @return the container descriptor.
+     */
     public ContainerDescriptor getDescriptor() {
         return descriptor;
     }
@@ -74,19 +89,20 @@ public class Container implements Closeable {
     }
 
     /**
-     * This one opens up the container if it has already been created
-     * @param containerListOperations
-     * @param name
-     * @param descriptor
+     * This one opens up the container if it has already been created.
+     *
+     * @param containerListOperations the over-class that manges the container list
+     * @param name the name of the container
+     * @param descriptor the container metadata
      */
-    public Container(final ContainerListOperations containerListOperations, final String name, final ContainerDescriptor descriptor) {
+    protected Container(final ContainerListOperations containerListOperations, final String name, final ContainerDescriptor descriptor) {
         this.name = name;
         this.containerListOperations = containerListOperations;
         this.descriptor = descriptor;
         shards = new ContainerShard[descriptor.getContainerMeta().getShardNumber()];
     }
 
-    public void remove() {
+    protected void remove() {
         for(int i=0; i<shards.length; i++) {
             ContainerShard shard = shards[i];
             if (shard == null) {
@@ -97,12 +113,16 @@ public class Container implements Closeable {
     }
 
     /**
-     * This constructor creates a new container
-     * @param containerListOperations
-     * @param name
-     * @param containerMeta
+     * This constructor creates a new container.
+     *
+     * <p>This function creates the {@link ContainerDescriptor} that should be stored on the
+     * container list as a value and opened again on the container-open operation</p>
+     *
+     * @param containerListOperations the over-class that manges the container list
+     * @param name the name of the container
+     * @param containerMeta the metadata of the container
      */
-    public Container(final ContainerListOperations containerListOperations, final String name, final ContainerMeta containerMeta) {
+    protected Container(final ContainerListOperations containerListOperations, final String name, final ContainerMeta containerMeta) {
         checkFreeSpaceToCreateContainer(name, containerListOperations.getMedia(), containerMeta);
         this.name = name;
         this.containerListOperations = containerListOperations;

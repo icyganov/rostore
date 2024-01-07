@@ -21,6 +21,12 @@ import java.util.function.Function;
 
 /**
  * A representation of the rostore container.
+ *
+ * <p>This is a heavy object that manages {@link ContainerShard} array.</p>
+ * <p>It must be closed once it is not used anymore. The closed instance can be safely disposed
+ * and should not be reused.</p>
+ * <p>This class manages asynchronous operations on the shards and can only be closed if
+ * all the operations are over.</p>
  */
 public class AsyncContainer implements Closeable {
     private final Container container;
@@ -29,6 +35,12 @@ public class AsyncContainer implements Closeable {
     private boolean shutdown;
     private AsyncContainers asyncContainers;
 
+    /**
+     * Will close the instance in case no active key operation has been observed
+     * for the given time.
+     *
+     * @param idleMillis the number of milliseconds the storage should be idle
+     */
     public void closeIfIdle(final long idleMillis) {
         if (!shutdown) {
             boolean shutdownStarted = false;
@@ -50,6 +62,10 @@ public class AsyncContainer implements Closeable {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public Container getContainer() {
         return container;
     }

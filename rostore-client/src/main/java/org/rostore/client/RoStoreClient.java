@@ -104,7 +104,10 @@ public class RoStoreClient {
 
     /**
      * Creates object {@link GeneralContainer}.
-     * Container itself is not created or opened, user respective function on the object itself.
+     * <p>Container itself is not created or opened, user respective function on the object itself.</p>
+     * <p>This function will create a new object every time the call is done. The caller may decide to
+     * store it and reuse on every operation.</p>
+     * <p>This object is very light-weight.</p>
      *
      * @param name name of the container
      * @param keySerializer serializer for the key object or null (in later case the {@link DefaultKeySerializer} is used)
