@@ -2,7 +2,12 @@ package rostore.v2.media;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.rostore.entity.Record;
+import org.rostore.entity.media.ContainerListProperties;
+import org.rostore.entity.media.ContainerMeta;
 import org.rostore.entity.media.MediaPropertiesBuilder;
+import org.rostore.v2.container.Container;
+import org.rostore.v2.container.ContainerListOperations;
 import rostore.TestFile;
 import org.rostore.entity.MemoryAllocation;
 import org.rostore.entity.RoStoreException;
@@ -14,6 +19,7 @@ import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.allocator.BlockAllocator;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,6 +153,41 @@ public class MediaTest {
     }
 
     @Test
+    public void checkOpenCloseOpenContainer() {
+        File file = TestFile.createNewFile("media-checkOpenCloseOpenContainer.blck");
+        MediaPropertiesBuilder mediaPropertiesBuilder = new MediaPropertiesBuilder();
+        mediaPropertiesBuilder.setMaxTotalSize(64*1000);
+        mediaPropertiesBuilder.setBlockSize(64);
+        try (Media media = Media.create(file, MediaProperties.from(mediaPropertiesBuilder))) {
+            ContainerListProperties containerListProperties = new ContainerListProperties();
+            ContainerListOperations containerListOperations = new ContainerListOperations(media, containerListProperties);
+            ContainerMeta cm = new ContainerMeta();
+            cm.setShardNumber(1);
+            // create a container
+            try (Container c = containerListOperations.create("BLAH", cm)) {
+                // write a key
+                c.getShard(0).keyFunction((ko)-> {
+                    final Record r = new Record().id(123);
+                    ko.putKey("key".getBytes(StandardCharsets.UTF_8), r);
+                    return r;
+                   }
+                );
+            }
+
+            for (int i=0; i<5; i++) {
+                try (Container c = containerListOperations.get("BLAH")) {
+                    // write a key
+                    c.getShard(0).keyFunction((ko) -> {
+                        Assertions.assertEquals(123, ko.getKey("key".getBytes(StandardCharsets.UTF_8)).getId(), "Wrong");
+                        return 1;
+                    });
+                }
+            }
+        }
+
+    }
+
+    @Test
     public void checkAllocatorExhausting() {
         File file = TestFile.createNewFile("media-3.blck");
         MediaPropertiesBuilder mediaPropertiesBuilder = new MediaPropertiesBuilder();
@@ -200,7 +241,6 @@ public class MediaTest {
         Assertions.assertEquals(1000, memoryAllocation.getTotalLockedSize() / 64);
 
     }
-
 
 
 }

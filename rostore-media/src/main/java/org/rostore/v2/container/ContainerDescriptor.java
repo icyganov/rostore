@@ -41,6 +41,11 @@ public class ContainerDescriptor {
         this.containerMeta = containerMeta;
     }
 
+    /**
+     * A list of shard descriptors, containing initialization data for every shard
+     *
+     * @return a list of shard descriptors
+     */
     public List<ContainerShardDescriptor> getShardDescriptors() {
         if (shardDescriptors == null) {
             shardDescriptors = new ArrayList<>();

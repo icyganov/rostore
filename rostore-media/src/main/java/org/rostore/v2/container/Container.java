@@ -54,6 +54,11 @@ public class Container implements Closeable {
         return descriptor;
     }
 
+    /**
+     * This is the major (parent) class that manages the list of containers
+     *
+     * @return the over-class
+     */
     public ContainerListOperations getContainerListOperations() {
         return containerListOperations;
     }
@@ -144,6 +149,12 @@ public class Container implements Closeable {
         }
     }
 
+    /**
+     * Requests the shard by index.
+     *
+     * @param shardIndex the shard's index
+     * @return the container's shard
+     */
     public ContainerShard getShard(final int shardIndex) {
         if (shardIndex<0 || shardIndex>=getDescriptor().getContainerMeta().getShardNumber()) {
             throw new RoStoreException("There is no shard with index=" + shardIndex + ", max=" + getDescriptor().getContainerMeta().getShardNumber());
@@ -165,8 +176,10 @@ public class Container implements Closeable {
         return shard;
     }
 
-    @Override
-    public void close() {
+    /**
+     * Use {@link Container#close()} to close the containers.
+     */
+    protected void closeInternal() {
         status = Status.CLOSED;
         for(final ContainerShard shard : shards) {
             try {
@@ -177,6 +190,14 @@ public class Container implements Closeable {
                 logger.log(Level.SEVERE, "Error in closing the container", e);
             }
         }
+    }
+
+    /**
+     * Closes the container and removes any references of it from the {@link ContainerListOperations}
+     */
+    @Override
+    public void close() {
+        containerListOperations.closeContainer(name);
     }
 
     @Override

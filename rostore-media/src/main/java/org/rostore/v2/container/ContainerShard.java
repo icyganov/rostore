@@ -28,7 +28,14 @@ public class ContainerShard implements Closeable {
 
     private BlockAllocator shardAllocator;
 
+    /**
+     * A set of currently executed allocated operations
+     */
     private List<ContainerShardKeyOperations> used = new ArrayList<>();
+
+    /**
+     * A set of cached key operations to be reused
+     */
     private Queue<ContainerShardKeyOperations> unused = new LinkedList<>();
 
     public BlockAllocator getShardAllocator() {
@@ -182,10 +189,23 @@ public class ContainerShard implements Closeable {
         }
     }
 
-    public <T> T keyFunction(final Function<ContainerShardKeyOperations, T> opsConsumer) {
-        ContainerShardKeyOperations ops = poll();
+    /**
+     * Executes an operation on the shard's keys catalog.
+     * <p>The function will provide a cached {@link ContainerShardKeyOperations} if one exists, or
+     * create one if cache is depleted.</p>
+     * <p>After the operation is over the {@link org.rostore.v2.catalog.CachedCatalogBlockOperations} will be
+     * returned to the cache, so it can be reused later.</p>
+     * <p>The operation does not do any blocking, for example for write-operations, it should be
+     * enforced by the caller.</p>
+     *
+     * @param keyFunction that will receive a {@link ContainerShardKeyOperations} instance to execute the operation
+     * @return the result of the function execution
+     * @param <T> the result type, e.g. {@link Record}
+     */
+    public <T> T keyFunction(final Function<ContainerShardKeyOperations, T> keyFunction) {
+        final ContainerShardKeyOperations ops = poll();
         try {
-            return opsConsumer.apply(ops);
+            return keyFunction.apply(ops);
         } finally {
             done(ops);
         }

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 public class ContainerListOperations {
 
-    private static final Logger logger = Logger.getLogger(ContainerListOperations.class.getName());
     private final ContainerListHeader containerListHeader;
 
     private final KeyBlockOperations keyBlockOperations;
@@ -34,13 +33,19 @@ public class ContainerListOperations {
         return containerListHeader;
     }
 
-    public Container closeContainer(final String containerName) {
+    /**
+     * Use {@link Container#close()} to close the containers.
+     * <p>This function is involved in irs operation and removes the container from the list,
+     * and allows to block the list during this operation.</p>
+     * @param containerName the name of the container to be closed
+     */
+    protected void closeContainer(final String containerName) {
         Container container = openedContainers.get(containerName);
         if (container != null) {
             synchronized (this) {
                 container = openedContainers.get(containerName);
                 if (container != null) {
-                    container.close();
+                    container.closeInternal();
                     openedContainers.remove(containerName);
                 } else {
                     throw new RoStoreException("Container " + containerName + " is not open.");
@@ -49,7 +54,6 @@ public class ContainerListOperations {
         } else {
             throw new RoStoreException("Container " + containerName + " is not open.");
         }
-        return container;
     }
 
     public void close() {

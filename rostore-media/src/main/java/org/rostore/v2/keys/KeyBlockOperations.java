@@ -324,6 +324,16 @@ public class KeyBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Sets the parameters from the record to the current entry
+     *
+     * <p>The validation of the update will also be executed.</p>
+     * <p>If the version would not fit or any option would prevent the operation
+     * to be executed, a fitting exception will be thrown,</p>
+     *
+     * @param record the new values to store
+     * @return the previous value of the id associated with the record
+     */
     private long updateRecord(final Record record) {
         final Record previousRecord = keyBlockEntry.getRecord();
         if (keyBlockEntry.isExpired()) {
@@ -752,6 +762,13 @@ public class KeyBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Searches for the provided key and return the {@link Record}
+     * associated with it.
+     *
+     * @param key a key to return
+     * @return the record if one has been found or {@code null}
+     */
     public Record getRecord(final byte[] key) {
         int cmp = findAfter(key);
         if (cmp == 0) {
