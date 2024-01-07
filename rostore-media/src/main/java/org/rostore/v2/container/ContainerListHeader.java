@@ -43,4 +43,11 @@ public class ContainerListHeader {
     public ContainerListHeader(final ContainerListProperties containerListProperties) {
         this.containerListProperties = containerListProperties;
     }
+
+    /**
+     * Is used by the serializer/deserializer
+     */
+    public ContainerListHeader() {
+
+    }
 }

@@ -32,8 +32,6 @@ public class ContainerMeta {
 
     /**
      * Sets the maximum size of the container.
-     *
-     * @return the maximum size in bytes
      */
     public void setMaxSize(long maxSize) {
         this.maxSize = maxSize;
