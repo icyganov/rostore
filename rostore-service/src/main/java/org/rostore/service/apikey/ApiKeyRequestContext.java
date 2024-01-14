@@ -6,6 +6,11 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import java.util.Optional;
 
+/**
+ * Class is injected in the REST filters and extract information
+ * about the API key of the current request.
+ * <p>Is used to assess the permissions associated with the current call.</p>
+ */
 @RequestScoped
 public class ApiKeyRequestContext {
 

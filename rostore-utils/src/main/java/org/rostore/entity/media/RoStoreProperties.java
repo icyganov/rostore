@@ -2,6 +2,10 @@ package org.rostore.entity.media;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+/**
+ * RoStore storage properties.
+ * <p>Exposed by the RoStore service and consumed by client.</p>
+ */
 public class RoStoreProperties {
 
     @Schema(description = "Media properties", example="{ \"maxTotalSize\": 1073741824, \"blockSize\": 4096, \"closeUnusedBlocksAfterMillis\": 5000, \"closeUnusedSequencesAfterMillis\": 10000}")

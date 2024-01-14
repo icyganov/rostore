@@ -19,6 +19,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.*;
 
+/**
+ * Singleton used in the RoStore service to control access to the APIKeys.
+ */
 @Startup
 @ApplicationScoped
 public class ApiKeyManager {
