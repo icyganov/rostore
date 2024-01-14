@@ -3,7 +3,7 @@ package org.rostore.entity;
 import org.rostore.entity.media.RecordOption;
 import org.rostore.v2.keys.KeyBlockEntry;
 
-public class OptionMismatchException extends RuntimeException {
+public class OptionMismatchException extends RoStoreException {
 
     private final Record record;
 

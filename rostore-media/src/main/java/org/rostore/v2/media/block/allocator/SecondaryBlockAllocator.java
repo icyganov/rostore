@@ -3,7 +3,6 @@ package org.rostore.v2.media.block.allocator;
 import org.rostore.entity.MemoryAllocation;
 import org.rostore.entity.MemoryAllocationState;
 import org.rostore.entity.QuotaExceededException;
-import org.rostore.entity.RoStoreException;
 import org.rostore.v2.catalog.CachedCatalogBlockOperations;
 import org.rostore.v2.catalog.CatalogBlockIndices;
 import org.rostore.v2.catalog.CatalogBlockOperations;
@@ -12,8 +11,30 @@ import org.rostore.v2.media.block.BlockProviderImpl;
 import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.container.Status;
 
+/**
+ * This class creates {@link BlockAllocator} that allows to control a set of blocks.
+ *
+ * <p>Allocation on the storage level still should happen on {@link RootBlockAllocator}, then
+ * the object of this class can store some subset of blocks, e.g. for container.</p>
+ * <p>This allocator will keep the blocks that has been allocated with its usage, then
+ * it can for example be freed without any knowledge about the structure of objects stored within it.</p>
+ * <p>E.g. for the container it is beneficial to know all the blocks that are associated with it,
+ * so that it can be considered independent from the rest.</p>
+ */
 public class SecondaryBlockAllocator {
 
+    /**
+     * Creates a new secondary block allocator.
+     *
+     * <p>It will create a new entity with the usage of {@link RootBlockAllocator}. After it is created its
+     * reference can be stored over {@link BlockAllocator#getStartIndex()}. This is the first block of
+     * the allocator.</p>
+     *
+     * @param allocatorName the name of the allocator, used for notification and logging
+     * @param rootBlockAllocator the root allocator
+     * @param upperBlockNumberLimit how many block numbers this allocator is allowed to manage
+     * @return the entity of block allocator to allocate the blocks
+     */
     public static BlockAllocator create(final String allocatorName, final BlockAllocator rootBlockAllocator, final long upperBlockNumberLimit) {
         final CatalogBlockIndices catalogBlockIndices = rootBlockAllocator.allocate(BlockType.CATALOG, org.rostore.v2.seq.Properties.AVG_FREE_BLOCK_NUMBER);
         final BlockProviderImpl secondaryBlockProvider = BlockProviderImpl.internal(rootBlockAllocator);
@@ -29,6 +50,15 @@ public class SecondaryBlockAllocator {
         return secondaryBlockAllocator;
     }
 
+    /**
+     * Loads the secondary block allocator by providing the first block of the allocator
+     *
+     * @param allocatorName the name of the allocator used for notification and logging
+     * @param rootBlockAllocator the root allocator
+     * @param startIndex the first index of the logging (taken by {@link BlockAllocator#getStartIndex()}
+     * @param upperBlockNumberLimit how many block numbers this allocator is allowed to manage
+     * @return the entity of block allocator to allocate the blocks
+     */
     public static BlockAllocator load(final String allocatorName, final BlockAllocator rootBlockAllocator, long startIndex, long upperBlockNumberLimit) {
         final BlockProviderImpl secondaryBlockProvider = BlockProviderImpl.internal(rootBlockAllocator);
         final CatalogBlockOperations reservedBlocksOperations = CatalogBlockOperations.load(secondaryBlockProvider, startIndex);

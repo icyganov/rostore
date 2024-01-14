@@ -32,34 +32,60 @@ public interface BlockAllocatorInternal extends Closeable {
      * provide a list of blocks to be used
      * @param blockNumber the number of blocks
      * @param rebalance if rebalance should happen in this cycle
-     * @return
+     * @return the block ids
      */
     CatalogBlockIndices allocate(final BlockType blockType, int blockNumber, boolean rebalance);
 
     /**
-     * allocate just one block
+     * Allocate just one block
+     *
      * @param rebalance if the rebalance should happen in this cycle
-     * @return
+     * @return the block index
      */
     long allocate(final BlockType blockType, boolean rebalance);
 
     /**
      * Marks a provided block as free
+     *
      * @param blockIndex the block index to mark
      * @param rebalance if the rebalance should happend in this cycle
      */
     void free(long blockIndex, boolean rebalance);
 
+    /**
+     * Free a set of blocks
+     *
+     * @param indices the set of blocks to free
+     * @param rebalance a flag if rebalance should happen
+     */
     void free(final CatalogBlockIndices indices, boolean rebalance);
 
     void dump();
 
+    /**
+     * Remove all blocks managed by this block allocator
+     */
     void remove();
 
+    /**
+     * Return the first block of the allocator
+     *
+     * @return the block index
+     */
     long getStartIndex();
 
+    /**
+     * The parent media
+     *
+     * @return the media object that this allocator belongs to
+     */
     Media getMedia();
 
+    /**
+     * The name of the allocator
+     *
+     * @return the name of the allocator
+     */
     String getName();
 }
 

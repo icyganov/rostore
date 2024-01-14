@@ -12,6 +12,17 @@ import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.container.Status;
 import org.rostore.v2.seq.Properties;
 
+/**
+ * Major allocator for the {@link Media}. All {@link org.rostore.v2.media.block.Block} allocations
+ * should happen over this instance.
+ * <p>The instance is responsible for accounting of all blocks and
+ * manages a table (base don {@link CatalogBlockOperations}) that register
+ * all free blocks-</p>
+ *
+ * <p>To accelerate operation the {@link CachedCatalogBlockOperations} is used,
+ * that holds specified list of blocks ready for allocation, effectively
+ * taking them from the pool of free blocks.</p>
+ */
 public class RootBlockAllocator {
 
     private static void checkFree(final BlockAllocatorInternal blockAllocator, long requested) {
@@ -21,6 +32,12 @@ public class RootBlockAllocator {
         }
     }
 
+    /**
+     * Creates a new root block allocator.
+     * <p>This operation should only be executed once.</p>
+     * @param media the media the root allocator is created in.
+     * @return
+     */
     public static BlockAllocator create(final Media media) {
         BlockProviderImpl blockProvider = BlockProviderImpl.internal(media);
         CatalogBlockIndices catalogBlockIndices = new CatalogBlockIndices();

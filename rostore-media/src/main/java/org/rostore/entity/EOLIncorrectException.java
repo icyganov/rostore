@@ -1,6 +1,10 @@
 package org.rostore.entity;
 
-public class EOLIncorrectException extends RuntimeException {
+/**
+ * Exception is thrown if the value of EOL violates some
+ * validation rules.
+ */
+public class EOLIncorrectException extends RoStoreException {
 
     private long incorrectEOL;
 

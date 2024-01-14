@@ -7,6 +7,10 @@ import org.rostore.v2.media.block.container.Status;
 
 import java.nio.ByteBuffer;
 
+/**
+ * An object to access and modify the data in the
+ * boundaries of one block. The data can be accessed by primitives line byte, int, and so further.
+ */
 public class Block implements Committable {
     private final ByteBuffer content;
 

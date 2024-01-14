@@ -3,6 +3,10 @@ package org.rostore.entity;
 import org.rostore.Utils;
 import org.rostore.entity.media.RecordOption;
 
+/**
+ * Exception thrown when the version of the record in the store is
+ * not the one as requested.
+ */
 public class VersionMismatchException extends RoStoreException {
 
     private static String getVersionString(long version) {

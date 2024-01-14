@@ -2,6 +2,9 @@ package org.rostore.client;
 
 import java.time.Duration;
 
+/**
+ * Properties that define connection to the remote rostore service
+ */
 public class RoStoreClientProperties {
 
     private final static int UPDATE_RETRIES = 10;

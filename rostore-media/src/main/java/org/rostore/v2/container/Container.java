@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 /**
  * Container class to manage access to the set of keys and their values.
  *
- * <p>This class combines several shards </p>
+ * <p>This class combines several shards.</p>
  */
 public class Container implements Closeable {
 

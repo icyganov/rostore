@@ -1,5 +1,8 @@
 package org.rostore.entity;
 
+/**
+ * Materialized object that implements {@link MemoryAllocation}
+ */
 public class MemoryAllocationState implements MemoryAllocation {
 
     private long payloadSize, totalLockedSize, lockedFreeSize;

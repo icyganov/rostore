@@ -42,6 +42,9 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.function.Function;
 
+/**
+ * The major object to access the remote rostore service.
+ */
 public class RoStoreClient {
 
     public static final String HEADER_VERSION = "version";
@@ -75,6 +78,11 @@ public class RoStoreClient {
         return nativeMapper;
     }
 
+    /**
+     * Get the list of all container names on the remote service
+     *
+     * @return the array of all container names
+     */
     public String[] listContainers() {
         RequestProperties requestProperties = create("/container/list").contentType(ContentType.JSON.getMediaType());
         return get(requestProperties, (httpResponse) ->
@@ -82,10 +90,32 @@ public class RoStoreClient {
         );
     }
 
+    /**
+     * Creates a new light-weight object that represents access to the container.
+     *
+     * <p>All value objects will be mapped by the provided {@link Mapper}.</p>
+     * <p>Keys are mapped by {@link Object#toString()}.</p>
+     *
+     * @param name the name of the container
+     * @param mapper the mapper to map the value objects from services
+     * @return the mapped container
+     * @param <K> type of the key
+     */
     public <K> MappedContainer<K> getMappedContainer(final String name, final Mapper mapper) {
         return new MappedContainer(this, name, mapper, null);
     }
 
+    /**
+     * Creates a new light-weight object that represents access to the container.
+     *
+     * <p>All value objects will be mapped by the provided {@link Mapper}.</p>
+     * <p>Keys will by mapped by {@link KeySerializer}.</p>
+     *
+     * @param name the name of the container
+     * @param mapper the mapper to map the value objects from services
+     * @return the mapped container
+     * @param <K> type of the key
+     */
     public <K> MappedContainer<K> getMappedContainer(final String name, final Mapper mapper, final KeySerializer<K> keySerializer) {
         return new MappedContainer(this, name, mapper, keySerializer);
     }
@@ -95,7 +125,7 @@ public class RoStoreClient {
      * Container itself is not created or opened, user respective function on the object itself.
      *
      * @param name name of the container
-     * @return
+     * @return the general container
      * @param <K> type of the key
      */
     public <K> GeneralContainer<K> getGeneralContainer(final String name) {
