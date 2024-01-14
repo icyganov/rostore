@@ -1,5 +1,8 @@
 package org.rostore.entity.media;
 
+/**
+ * Represents information about the version of the rostore instance.
+ */
 public class Version {
     private String apiVersion;
 

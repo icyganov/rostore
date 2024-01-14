@@ -1,5 +1,8 @@
 package org.rostore.entity.media;
 
+/**
+ * This one needed to create media properties.
+ */
 public class MediaPropertiesBuilder {
     private static final long CLOSE_UNUSED_BLOCKS_AFTER_MILLIS = 5*1000;
     private static final long CLOSE_UNUSED_SEQUENCES_AFTER_MILLIS = 5*1000;

@@ -3,6 +3,9 @@ package org.rostore.entity.apikey;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.rostore.entity.apikey.ApiKeyPermissions;
 
+/**
+ * A class that puts together the api key and value in form of {@link ApiKeyPermissions}.
+ */
 @Schema(description = "Api Key")
 public class ApiKeyDefinition {
 
@@ -17,7 +20,7 @@ public class ApiKeyDefinition {
 
     }
 
-    public ApiKeyDefinition(String key, ApiKeyPermissions apiKeyPermissions) {
+    public ApiKeyDefinition(final String key, final ApiKeyPermissions apiKeyPermissions) {
         this.lastUpdate = System.currentTimeMillis();
         this.key = key;
         this.apiKeyPermissions = apiKeyPermissions;

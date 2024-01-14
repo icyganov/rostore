@@ -1,5 +1,9 @@
 package org.rostore.mapper;
 
+/**
+ * Class defines the properties of the {@link BinaryMapper}
+ * that specify the length of the fields depending on the storage internal properties.
+ */
 public class MapperProperties {
 
     private int bytesPerBlockIndex;

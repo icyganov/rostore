@@ -2,6 +2,9 @@ package org.rostore;
 
 import java.nio.charset.Charset;
 
+/**
+ * General functions and constants used in rostore modules.
+ */
 public class Utils {
 
     public final static Charset UTF_8 = Charset.forName("UTF-8");

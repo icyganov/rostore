@@ -2,6 +2,11 @@ package org.rostore.entity.media;
 
 import java.util.EnumSet;
 
+/**
+ * Specify behaviour of the system when update or creation of key-value happens.
+ *
+ * <p>Needed to change some validation rules if required.</p>
+ */
 public enum RecordOption {
 
     /**

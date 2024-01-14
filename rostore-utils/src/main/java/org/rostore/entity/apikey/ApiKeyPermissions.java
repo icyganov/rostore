@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Defines permissions associated with APIKEY
+ */
 @Schema(description="Permissions associated with APIKEY")
 public class ApiKeyPermissions {
 

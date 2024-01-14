@@ -1,5 +1,8 @@
 package org.rostore.client;
 
+/**
+ * The exception is thrown by rostore client, in case of any issue in the communication with the remote rostore service.
+ */
 public class ClientException extends RuntimeException {
 
     private final String trackingId;

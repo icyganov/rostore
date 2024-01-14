@@ -7,6 +7,13 @@ import java.lang.reflect.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * A class to serialize and deserialize java classes to the binary stream.
+ * <p>It uses some properties of the rostore, e.g. the binary length of block indexes or block offset.</p>
+ * <p>Depending on the parameters of the storage it can vary.</p>
+ * <p>Use {@link BlockIndex} annotation to mark fields that store the block index,
+ * and {@link BlockOffset} that represents the offset within a block.</p>
+ */
 public class BinaryMapper {
 
     private static final int MAX_BYTES_FOR_LENGTH = 4;
