@@ -15,7 +15,7 @@ import org.rostore.v2.media.block.BlockType;
  * blocks are used to maintain a chain on catalog blocks and can extend or shrink it.
  * After the operation is done it may have used one or several of that block, so that the "balance" of
  * the preserved blocks is changed. The balance=true would mean that the operation must execute the
- * rebalance at the end of operation. The true is all the time provided if allocation / freeing is executed
+ * rebalance at the end of operation. The {@code true} is all the time provided if allocation / freeing is executed
  * by the customer...
  * But during the rebalancing itself the rebalance should be suppressed to not fall into the recursion problem.
  * That's why the rebalance=false is all the time used from the internal processes.

@@ -3,6 +3,9 @@ package org.rostore.v2.keys;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A list of keys loaded by the {@link KeyBlockOperations}.
+ */
 public class KeyList {
 
     private List<byte[]> keys = new ArrayList<>();

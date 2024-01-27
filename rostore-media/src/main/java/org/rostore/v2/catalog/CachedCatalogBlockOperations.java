@@ -4,9 +4,22 @@ import org.rostore.v2.media.Committable;
 import org.rostore.v2.media.Media;
 import org.rostore.v2.media.block.BlockProvider;
 import org.rostore.v2.media.block.container.Status;
+import org.rostore.v2.seq.BlockIndexSequence;
+import org.rostore.v2.seq.BlockSequence;
 
 import java.util.function.Consumer;
 
+/**
+ * This class extends {@link CatalogBlockOperations} by caching some subset
+ * of the catalog in memory. It will make operations faster, but also
+ * would make some operation less fault-tolerant.
+ *
+ * <p>When the catalog is created, a min and max size of the cache is provided.
+ * if the internal cache become bigger than the given maximum, then the entries are
+ * written to the catalog. If the cache size is lower than the minimum, the
+ * values are extracted form the catalog.</p>
+ *
+ */
 public class CachedCatalogBlockOperations implements Committable {
 
     final private CatalogBlockOperations catalogBlockOperations;
@@ -16,18 +29,39 @@ public class CachedCatalogBlockOperations implements Committable {
 
     final private CatalogBlockIndices cache;
 
+    /**
+     * Provides a number of free blocks in the underlying {@link BlockIndexSequence}.
+     * It is not the same as the free blocks that might be managed by the catalog itself.
+     *
+     * @return the number of free blocks
+     */
     public long getSequenceIndexFreeBlockNumber() {
         return this.catalogBlockOperations.getSequenceIndexFreeBlockNumber();
     }
 
+    /**
+     * Provides the number of blocks in the cache
+     * @return the cache size
+     */
     public long getCachedBlockNumber() {
         return cache.getLength();
     }
 
+    /**
+     * A block provider that is used to manage the blocks in this catalog operations
+     *
+     * @return the block provider
+     */
     public BlockProvider getBlockProvider() {
         return catalogBlockOperations.getBlockProvider();
     }
 
+    /**
+     * Creates a cached version with the {@link CatalogBlockOperations} backend
+     * @param catalogBlockOperations the backing catalog ops
+     * @param minCacheSize the minimum size of the cache
+     * @param maxCacheSize the maximum size of the cache
+     */
     public CachedCatalogBlockOperations(final CatalogBlockOperations catalogBlockOperations,
                                         int minCacheSize,
                                         int maxCacheSize) {
@@ -39,10 +73,22 @@ public class CachedCatalogBlockOperations implements Committable {
         cache = new CatalogBlockIndices();
     }
 
+    /**
+     * Catalog counts and persists internally the total number of blocks
+     * in the catalog.
+     * @return the total number of blocks in the catalog
+     */
     public long getAddedNumber() {
         return catalogBlockOperations.getAddedNumber();
     }
 
+    /**
+     * This is the version of {@link CatalogBlockOperations#extractIndex(long, boolean)} that uses internal cache
+     *
+     * @param blockNumber the number of blocks to extract
+     * @param rebalance indicates if rebalance should be executed
+     * @return the indices that has been extracted
+     */
     public CatalogBlockIndices extractIndex(final int blockNumber, final boolean rebalance) {
         checkOpened();
         if (cache.getLength() >= blockNumber) {
@@ -80,9 +126,17 @@ public class CachedCatalogBlockOperations implements Committable {
         }
     }
 
-    public void add(final CatalogBlockIndices indices, boolean rebalance) {
+    /**
+     * This is a version of {@link CatalogBlockOperations#add(CatalogBlockIndices, boolean)} with the cache
+     *
+     * <p>With regards to rebalance, see {@link BlockSequence#rebalance()}</p>
+     *
+     * @param catalogBlockIndices the set of blocks
+     * @param rebalance indicates if the rebalance should be executed
+     */
+    public void add(final CatalogBlockIndices catalogBlockIndices, final boolean rebalance) {
         checkOpened();
-        cache.add(indices);
+        cache.add(catalogBlockIndices);
         if (rebalance) {
             // cache is NOT refreshed on the rebalancing cycle to not saturate the free blocks
             if (cache.getLength() > maxCacheSize) {
@@ -93,9 +147,17 @@ public class CachedCatalogBlockOperations implements Committable {
         }
     }
 
-    public void remove(final CatalogBlockIndices indices, boolean rebalance) {
+    /**
+     * This is a version of {@link CatalogBlockOperations#remove(CatalogBlockIndices, boolean)} with the cache
+     *
+     * <p>With regards to rebalance, see {@link BlockSequence#rebalance()}</p>
+     *
+     * @param catalogBlockIndices the set of blocks
+     * @param rebalance indicates if the rebalance should be executed
+     */
+    public void remove(final CatalogBlockIndices catalogBlockIndices, final boolean rebalance) {
         checkOpened();
-        final CatalogBlockIndices notRemoved = cache.remove(indices);
+        final CatalogBlockIndices notRemoved = cache.remove(catalogBlockIndices);
         if (!notRemoved.isEmpty()) {
             catalogBlockOperations.remove(notRemoved, rebalance);
         }
@@ -108,6 +170,9 @@ public class CachedCatalogBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Returns all the entries from the cache back to catalog and closes it.
+     */
     @Override
     public void close() {
         catalogBlockOperations.add(cache, true);
@@ -115,11 +180,17 @@ public class CachedCatalogBlockOperations implements Committable {
         catalogBlockOperations.close();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Status getStatus() {
         return catalogBlockOperations.getStatus();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void commit() {
         catalogBlockOperations.commit();
@@ -132,14 +203,31 @@ public class CachedCatalogBlockOperations implements Committable {
         System.out.println("<e---------------------------------");
     }
 
+    /**
+     * Gives the index of the first block of the sequence where the data associated with catalog is stored.
+     *
+     * <p>It is enough to store this index somewhere to be able to restore the whole catalog</p>
+     *
+     * @return the first block index of this catalog
+     */
     public long getStartIndex() {
         return catalogBlockOperations.getStartIndex();
     }
 
+    /**
+     * Provides the parent media
+     *
+     * @return the parent media
+     */
     public Media getMedia() {
         return catalogBlockOperations.getBlockProvider().getMedia();
     }
 
+    /**
+     * Iterates all blocks in the catalog, inclusive those from the cache
+     *
+     * @param consumer the consumer to consume all the blocks
+     */
     public void iterateAll(final Consumer<CatalogBlockIndices> consumer) {
         consumer.accept(cache);
         catalogBlockOperations.iterateAll(consumer);

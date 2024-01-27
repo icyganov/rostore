@@ -5,7 +5,7 @@ import org.rostore.v2.media.block.allocator.BlockAllocator;
 import org.rostore.v2.media.block.container.BlockContainer;
 
 /**
- * Creation of this instance creates a new {@link BlockContainer}.
+ * This instance manages a low-level block operation and creates a new {@link BlockContainer}.
  * <p>This effectively creates a transactional boundary, that needs to be managed.</p>
  * Code that creates this {@link BlockProvider} is responsible to clean it up by calling {@link BlockContainer#close()}.
  *
