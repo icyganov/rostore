@@ -14,22 +14,44 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Has to be closed at the end
- * The provided block provider should be processed independently
+ * This is the major class to manage a catalog of blocks.
+ * This catalogs stores in a sequence of blocks the references to other blocks.
+ * Can be used for example, to store a set of blocks for the secondary block allocator or
+ * any other purpose of the persistent set of blocks.
+ * <p>Has to be closed at the end</p>
+ * <p>The provided block provider should be processed independently</p>
  */
 public class CatalogBlockOperations implements Committable {
 
     private final FixSizeEntryBlock<CatalogBlockEntry> catalogBlock;
     private final CatalogBlockEntry catalogBlockEntry;
 
+    /**
+     * Provides a number of free blocks in the underlying {@link BlockIndexSequence}.
+     * It is not the same as the free blocks that might be managed by the catalog itself.
+     *
+     * @return the number of free blocks
+     */
     public long getSequenceIndexFreeBlockNumber() {
         return catalogBlock.getBlockSequence().getBlockIndexSequence().getFreeBlockNumber();
     }
 
+    /**
+     * A block provider that is used to manage the blocks in this catalog operations
+     *
+     * @return the block provider
+     */
     public BlockProvider getBlockProvider() {
         return catalogBlock.getBlockProvider();
     }
 
+    /**
+     * Gives the index of the first block of the sequence where the data associated with catalog is stored.
+     *
+     * <p>It is enough to store this index somewhere to be able to restore the whole catalog</p>
+     *
+     * @return the first block index of this catalog
+     */
     public long getStartIndex() {
         return catalogBlock.getBlockSequence().getBlockIndexSequence().getBlockIndex(0);
     }
@@ -41,6 +63,11 @@ public class CatalogBlockOperations implements Committable {
 
     private boolean rebalanceNeeded = false;
 
+    /**
+     * A function will iteratively provide all block indices in the catalog
+     *
+     * @param entryConsumer a consumer that would have to accept all the blocks
+     */
     public void iterateAll(final Consumer<CatalogBlockIndices> entryConsumer) {
         checkOpened();
         catalogBlock.root();
@@ -62,6 +89,12 @@ public class CatalogBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Loads an instance of the catalog based on the index of the first block (given by {@link #getStartIndex()}).
+     * @param blockProvider the block provider to be used by the object
+     * @param startIndex the index of the first block
+     * @return an instance of the catalog transaction
+     */
     public static CatalogBlockOperations load(final BlockProvider blockProvider, final long startIndex) {
         return new CatalogBlockOperations(cbo -> SequenceBlock.load(blockProvider, startIndex,
                 (Function<BlockSequence<FixSizeEntryBlock>, FixSizeEntryBlock>) sequence ->
@@ -71,6 +104,20 @@ public class CatalogBlockOperations implements Committable {
                                 cbo::calculateCollapseNeeded), BlockType.CATALOG));
     }
 
+    /**
+     * Creates a new catalog.
+     *
+     * <p>After the catalog is created it can be stored just by storing {@link #getStartIndex()}, and
+     * the next time it can be reinitialized by {@link #load(BlockProvider, long)}</p>
+     *
+     * <p>As the catalogs might participate in the allocators, they usually would require to
+     * hold some free blocks to cover the internal allocation cycles, that's why the method requires
+     * a set of blocks to initialize a new catalog.</p>
+     *
+     * @param blockProvider the block provider to be used
+     * @param catalogBlockIndices this is the initial set of blocks that should be reserved for the underlying block sequence
+     * @return an instance of the catalog
+     */
     public static CatalogBlockOperations create(final BlockProvider blockProvider, CatalogBlockIndices catalogBlockIndices) {
         return new CatalogBlockOperations(cbo -> SequenceBlock.create(blockProvider,
                 catalogBlockIndices,
@@ -81,6 +128,15 @@ public class CatalogBlockOperations implements Committable {
                                 cbo::calculateCollapseNeeded), BlockType.CATALOG));
     }
 
+    /**
+     * Creates a new catalog.
+     *
+     * <p>After the catalog is created it can be stored just by storing {@link #getStartIndex()}, and
+     * the next time it can be reinitialized by {@link #load(BlockProvider, long)}</p>
+     *
+     * @param blockProvider the block provider to be used
+     * @return an instance of the catalog
+     */
     public static CatalogBlockOperations create(final BlockProvider blockProvider) {
         return new CatalogBlockOperations(cbo -> SequenceBlock.create(blockProvider,
                 (Function<BlockSequence<FixSizeEntryBlock>, FixSizeEntryBlock>) sequence ->
@@ -123,24 +179,16 @@ public class CatalogBlockOperations implements Committable {
         }
     }
 
-    public long computeFreeBlocksNumber() {
-        long number = 0;
-        catalogBlock.root();
-        while(catalogBlock.valid()) {
-            for(int i=0; i<catalogBlock.getEntriesNumber(); i++) {
-                catalogBlockEntry.moveTo(i);
-                number += catalogBlockEntry.getEntryStop() - catalogBlockEntry.getEntryStart() + 1;
-            }
-            catalogBlock.next();
-        }
-        return number;
-    }
-
     private void incAddedNumber(final long added) {
         catalogBlock.root();
         catalogBlockEntry.incAddedNumber(added);
     }
 
+    /**
+     * Catalog counts and persists internally the total number of blocks
+     * in the catalog.
+     * @return the total number of blocks in the catalog
+     */
     public long getAddedNumber() {
         checkOpened();
         catalogBlock.root();
@@ -148,9 +196,17 @@ public class CatalogBlockOperations implements Committable {
     }
 
     /**
-     * This function can return not a requested number of blocks
+     * This function will extract the requested number of blocks from the catalog.
+     * It iterates from the bottom - up. And adds the blocks found in the catalog,
+     * remove them from the catalog and add them to the returned {@link CatalogBlockIndices}.
+     *
+     * <p>Note that if the catalog will be empty at some point, it will return less blocks
+     * than requested.</p>
+     *
+     * <p>With regards to rebalance, see {@link BlockSequence#rebalance()}</p>
      *
      * @param number the requested number of blocks
+     * @param rebalance indicates if the rebalance should be executed
      * @return the set blocks that was available
      */
     public CatalogBlockIndices extractIndex(final long number, final boolean rebalance) {
@@ -279,6 +335,15 @@ public class CatalogBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Adds a set of blocks to the catalog.
+     *
+     * <p>With regards to rebalance, see {@link BlockSequence#rebalance()}</p>
+     *
+     * @param catalogBlockIndices the set of blocks
+     *
+     * @param rebalance indicates if the rebalance should be executed
+     */
     public void add(final CatalogBlockIndices catalogBlockIndices, final boolean rebalance) {
         checkOpened();
         for(int i=0; i<catalogBlockIndices.getGroupNumber(); i++) {
@@ -286,6 +351,17 @@ public class CatalogBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Removes a set of blocks from the catalog.
+     *
+     * <p>If some blocks won't found in the catalog - it would throw an exception.</p>
+     *
+     * <p>With regards to rebalance, see {@link BlockSequence#rebalance()}</p>
+     *
+     * @param catalogBlockIndices the set of blocks
+     *
+     * @param rebalance indicates if the rebalance should be executed
+     */
     public void remove(final CatalogBlockIndices catalogBlockIndices, final boolean rebalance) {
         checkOpened();
         for(int i=0; i<catalogBlockIndices.getGroupNumber(); i++) {
@@ -293,7 +369,15 @@ public class CatalogBlockOperations implements Committable {
         }
     }
 
-
+    /**
+     * Adds a set of blocks from the range {@param startIndex} - {@param stopIndex } to the catalog.
+     *
+     * <p>With regards to rebalance, see {@link BlockSequence#rebalance()}</p>
+     *
+     * @param startIndex the first block index to add
+     * @param stopIndex the last block index to add
+     * @param rebalance indicates if the rebalance should be executed
+     */
     public void add(final long startIndex, final long stopIndex, final boolean rebalance) {
         checkOpened();
         if (stopIndex < startIndex) {
@@ -367,10 +451,16 @@ public class CatalogBlockOperations implements Committable {
         rebalance(rebalance);
     }
 
-    public void clear() {
-
-    }
-
+    /**
+     * Removes a set of blocks from the range {@param startIndex} - {@param stopIndex } from the catalog.
+     *
+     * <p>If some blocks won't found in the catalog - it would throw an exception.</p>
+     * <p>With regards to rebalance, see {@link BlockSequence#rebalance()}</p>
+     *
+     * @param startIndex the first block index to remove
+     * @param stopIndex the last block index to remove
+     * @param rebalance indicates if the rebalance should be executed
+     */
     public void remove(final long startIndex, final long stopIndex, final boolean rebalance) {
 
         checkOpened();
@@ -456,7 +546,7 @@ public class CatalogBlockOperations implements Committable {
     private boolean addEdgeCases(final long startIndex, final long stopIndex) {
         catalogBlock.root();
         if (catalogBlock.getEntriesNumber()==0) {
-            // no any records in the root
+            // there is no any records in the root
             if (catalogBlock.getBlockSequence().length() == 1) {
                 catalogBlock.root();
                 catalogBlockEntry.expand();
@@ -548,6 +638,10 @@ public class CatalogBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Closes the catalog and frees the sequence,
+     * blocks still needs to be committed/closed by the usage of {@link #getBlockProvider()}
+     */
     @Override
     public void close() {
         commit();
@@ -559,11 +653,12 @@ public class CatalogBlockOperations implements Committable {
         return catalogBlock.getStatus();
     }
 
-    public void remove() {
-    }
-
+    /**
+     * Commit all the active blocks from the associated container
+     */
     @Override
     public void commit() {
         catalogBlock.getBlockProvider().getBlockContainer().commit();
     }
 }
+

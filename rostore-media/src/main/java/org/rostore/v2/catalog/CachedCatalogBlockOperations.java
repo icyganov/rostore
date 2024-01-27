@@ -136,10 +136,6 @@ public class CachedCatalogBlockOperations implements Committable {
         return catalogBlockOperations.getStartIndex();
     }
 
-    public void remove() {
-        catalogBlockOperations.remove();
-    }
-
     public Media getMedia() {
         return catalogBlockOperations.getBlockProvider().getMedia();
     }

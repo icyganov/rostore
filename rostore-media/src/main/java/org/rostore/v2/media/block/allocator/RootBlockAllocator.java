@@ -142,7 +142,7 @@ public class RootBlockAllocator {
 
             @Override
             public synchronized void remove() {
-                rootFreeBlockOperations.remove();
+                // the blocks can't be removed from the root
             }
 
             @Override

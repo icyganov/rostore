@@ -1,6 +1,7 @@
 package org.rostore.v2.media.block;
 
 import org.rostore.entity.RoStoreException;
+import org.rostore.v2.media.Closeable;
 import org.rostore.v2.media.Committable;
 import org.rostore.v2.media.block.container.BlockContainer;
 import org.rostore.v2.media.block.container.Status;
@@ -11,7 +12,7 @@ import java.nio.ByteBuffer;
  * An object to access and modify the data in the
  * boundaries of one block. The data can be accessed by primitives line byte, int, and so further.
  */
-public class Block implements Committable {
+public class Block implements Closeable {
     private final ByteBuffer content;
 
     private final MappedPhysicalBlock mappedPhysicalBlock;
@@ -235,8 +236,4 @@ public class Block implements Committable {
         return blockContainer.hasBlock(getAbsoluteIndex()) ? Status.OPENED : Status.CLOSED;
     }
 
-    @Override
-    public void commit() {
-        mappedPhysicalBlock.flush();
-    }
 }
