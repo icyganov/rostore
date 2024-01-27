@@ -6,6 +6,7 @@ package org.rostore.v2.media.block;
  *
  * <p>This data is not persisted, and rather is available based on the run-time
  * logic after the block is allocated.</p>
+ * <p>DATA blocks are not cached after they are freed.</p>
  */
 public enum BlockType {
 

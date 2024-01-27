@@ -9,7 +9,7 @@ import org.rostore.v2.fixsize.FixSizeEntryBlock;
 import org.rostore.v2.media.Committable;
 import org.rostore.v2.media.block.Block;
 import org.rostore.v2.media.block.BlockProvider;
-import org.rostore.v2.media.block.BlockProviderImpl;
+import org.rostore.v2.media.block.InternalBlockProvider;
 import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.allocator.BlockAllocator;
 import org.rostore.v2.media.block.container.Status;
@@ -68,7 +68,7 @@ public class KeyBlockOperations implements Committable {
     public static KeyBlockOperations load(final BlockAllocator blockAllocator,
                                           final long startIndex,
                                           final RecordLengths recordLengths) {
-        final BlockProvider blockProvider = BlockProviderImpl.internal(blockAllocator);
+        final BlockProvider blockProvider = InternalBlockProvider.create(blockAllocator);
         return new KeyBlockOperations(
                 blockProvider,
                 kbo -> SequenceBlock.load(blockProvider, startIndex,
@@ -81,7 +81,7 @@ public class KeyBlockOperations implements Committable {
 
     public static KeyBlockOperations create(final BlockAllocator blockAllocator,
                                             final RecordLengths recordLengths) {
-        final BlockProvider blockProvider = BlockProviderImpl.internal(blockAllocator);
+        final BlockProvider blockProvider = InternalBlockProvider.create(blockAllocator);
         return new KeyBlockOperations(
                 blockProvider,
                 kbo -> SequenceBlock.create(blockProvider,

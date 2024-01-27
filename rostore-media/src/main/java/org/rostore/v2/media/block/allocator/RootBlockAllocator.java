@@ -7,7 +7,7 @@ import org.rostore.v2.catalog.CachedCatalogBlockOperations;
 import org.rostore.v2.catalog.CatalogBlockIndices;
 import org.rostore.v2.catalog.CatalogBlockOperations;
 import org.rostore.v2.media.Media;
-import org.rostore.v2.media.block.BlockProviderImpl;
+import org.rostore.v2.media.block.InternalBlockProvider;
 import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.container.Status;
 import org.rostore.v2.seq.Properties;
@@ -39,7 +39,7 @@ public class RootBlockAllocator {
      * @return
      */
     public static BlockAllocator create(final Media media) {
-        BlockProviderImpl blockProvider = BlockProviderImpl.internal(media);
+        InternalBlockProvider blockProvider = InternalBlockProvider.create(media);
         CatalogBlockIndices catalogBlockIndices = new CatalogBlockIndices();
         catalogBlockIndices.add(1, Properties.AVG_FREE_BLOCK_NUMBER);
         final CatalogBlockOperations rootFreeBlockOperations = CatalogBlockOperations.create(blockProvider, catalogBlockIndices);
@@ -50,7 +50,7 @@ public class RootBlockAllocator {
     }
 
     public static BlockAllocator load(final Media media) {
-        BlockProviderImpl blockProvider = BlockProviderImpl.internal(media);
+        InternalBlockProvider blockProvider = InternalBlockProvider.create(media);
         final BlockAllocator rootBlockAllocator = createRootBlockAllocator(CatalogBlockOperations.load(blockProvider, 1));
         blockProvider.exchangeBlockAllocator(rootBlockAllocator);
         return rootBlockAllocator;

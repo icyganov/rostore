@@ -2,12 +2,25 @@ package org.rostore.v2.media.block;
 
 import org.rostore.entity.RoStoreException;
 import org.rostore.v2.media.Media;
+import org.rostore.v2.media.MediaProperties;
 import org.rostore.v2.media.block.container.BlockContainer;
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This is a container of all active physical blocks in the ro-store.
+ * <p>It manages a cache of the blocks, so that different processes would get the
+ * access to the same instances of the blocks.</p>
+ * <p>When the blocks are not used by any processes they still be preserved in
+ * the cache until the time provided in {@link MediaProperties#getCloseUnusedBlocksAfterMillis()} is expired.</p>
+ * <p>This passive caching is only applied for the non-data blocks, the blocks which type
+ * is not {@link BlockType#DATA}.</p>
+ * <p>This is a major hub of blocks in the {@link Media} and this class manages the
+ * concurrent access and is internally is thread safe.</p>
+ * <p>A great precaution should be paid to the synchronized blocks in its implementation.</p>
+ */
 public class MappedPhysicalBlocks {
 
     private static final Logger logger = Logger.getLogger(Media.class.getName());
@@ -17,14 +30,34 @@ public class MappedPhysicalBlocks {
     private final Media media;
     private int maxBlocks = 0;
 
+    /**
+     * Creates an object
+     *
+     * @param media the media it should be used in
+     */
     public MappedPhysicalBlocks(final Media media) {
         this.media = media;
     }
 
+    /**
+     * The total size of passively cached blocks and the actively used that are
+     * currently managed by this instance.
+     *
+     * @return a number of blocks currently in the memory
+     */
     public int size() {
         return active.size() + passive.size();
     }
 
+    /**
+     * Creates a {@link BlockContainer} private {@link Block}. If the block is not in use or in cache,
+     * it is get loaded from the persistence layer.
+     *
+     * @param blockContainer the container the block should be associated with
+     * @param index the index of the block
+     * @param blockType the type of the block
+     * @return a block that can be used in the container
+     */
     public Block get(final BlockContainer blockContainer, final long index, final BlockType blockType) {
         MappedPhysicalBlock mappedPhysicalBlock;
         synchronized (this) {

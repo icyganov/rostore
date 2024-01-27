@@ -7,7 +7,7 @@ import org.rostore.v2.catalog.CachedCatalogBlockOperations;
 import org.rostore.v2.catalog.CatalogBlockIndices;
 import org.rostore.v2.catalog.CatalogBlockOperations;
 import org.rostore.v2.media.Media;
-import org.rostore.v2.media.block.BlockProviderImpl;
+import org.rostore.v2.media.block.InternalBlockProvider;
 import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.container.Status;
 
@@ -37,7 +37,7 @@ public class SecondaryBlockAllocator {
      */
     public static BlockAllocator create(final String allocatorName, final BlockAllocator rootBlockAllocator, final long upperBlockNumberLimit) {
         final CatalogBlockIndices catalogBlockIndices = rootBlockAllocator.allocate(BlockType.CATALOG, org.rostore.v2.seq.Properties.AVG_FREE_BLOCK_NUMBER);
-        final BlockProviderImpl secondaryBlockProvider = BlockProviderImpl.internal(rootBlockAllocator);
+        final InternalBlockProvider secondaryBlockProvider = InternalBlockProvider.create(rootBlockAllocator);
         final CatalogBlockOperations reservedBlocksOperations = CatalogBlockOperations.create(secondaryBlockProvider, catalogBlockIndices);
         final BlockAllocator secondaryBlockAllocator = createSecondaryBlockAllocator(allocatorName, rootBlockAllocator, reservedBlocksOperations, upperBlockNumberLimit);
         secondaryBlockProvider.exchangeBlockAllocator(secondaryBlockAllocator);
@@ -60,7 +60,7 @@ public class SecondaryBlockAllocator {
      * @return the entity of block allocator to allocate the blocks
      */
     public static BlockAllocator load(final String allocatorName, final BlockAllocator rootBlockAllocator, long startIndex, long upperBlockNumberLimit) {
-        final BlockProviderImpl secondaryBlockProvider = BlockProviderImpl.internal(rootBlockAllocator);
+        final InternalBlockProvider secondaryBlockProvider = InternalBlockProvider.create(rootBlockAllocator);
         final CatalogBlockOperations reservedBlocksOperations = CatalogBlockOperations.load(secondaryBlockProvider, startIndex);
         final BlockAllocator secondaryBlockAllocator = createSecondaryBlockAllocator(allocatorName, rootBlockAllocator, reservedBlocksOperations, upperBlockNumberLimit);
         secondaryBlockProvider.exchangeBlockAllocator(secondaryBlockAllocator);

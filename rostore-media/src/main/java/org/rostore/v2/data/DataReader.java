@@ -6,7 +6,7 @@ import org.rostore.v2.media.Committable;
 import org.rostore.v2.media.Media;
 import org.rostore.v2.media.block.Block;
 import org.rostore.v2.media.block.BlockProvider;
-import org.rostore.v2.media.block.BlockProviderImpl;
+import org.rostore.v2.media.block.InternalBlockProvider;
 import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.allocator.BlockAllocator;
 import org.rostore.v2.media.block.container.Status;
@@ -65,7 +65,7 @@ public class DataReader extends InputStream implements Committable {
      * @return the data reader object
      */
     public static DataReader open(final Media media, final long startIndex) {
-        return new DataReader(BlockProviderImpl.internal(media), startIndex);
+        return new DataReader(InternalBlockProvider.create(media), startIndex);
     }
 
     /**
@@ -79,7 +79,7 @@ public class DataReader extends InputStream implements Committable {
      * @return the data reader object
      */
     public static DataReader open(final BlockAllocator allocator, final long startIndex) {
-        return new DataReader(BlockProviderImpl.internal(allocator), startIndex);
+        return new DataReader(InternalBlockProvider.create(allocator), startIndex);
     }
 
     public static void safeReader(final Media media, final long startIndex, final Consumer<DataReader> dataReaderConsumer) {

@@ -5,7 +5,7 @@ import org.rostore.mapper.BinaryMapper;
 import org.rostore.v2.media.Committable;
 import org.rostore.v2.media.block.Block;
 import org.rostore.v2.media.block.BlockProvider;
-import org.rostore.v2.media.block.BlockProviderImpl;
+import org.rostore.v2.media.block.InternalBlockProvider;
 import org.rostore.v2.media.block.BlockType;
 import org.rostore.v2.media.block.allocator.BlockAllocator;
 import org.rostore.v2.media.block.container.Status;
@@ -137,7 +137,7 @@ public class DataWriter extends OutputStream implements Committable {
      * @return the data writer object
      */
     public static DataWriter open(final BlockAllocator blockAllocator, final long startIndex) {
-        return new DataWriter(BlockProviderImpl.internal(blockAllocator), startIndex);
+        return new DataWriter(InternalBlockProvider.create(blockAllocator), startIndex);
     }
 
     /**
