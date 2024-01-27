@@ -21,6 +21,11 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A major class representing the ro-store storage.
+ * <p>It is a basic media, which represents a simple basic building block
+ * of the media, which can be extended.</p>
+ */
 public class Media extends RootClosableImpl {
 
     private static final Logger logger = Logger.getLogger(Media.class.getName());

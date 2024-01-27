@@ -4,6 +4,11 @@ import org.rostore.Utils;
 import org.rostore.entity.media.MediaPropertiesBuilder;
 import org.rostore.mapper.MapperProperties;
 
+/**
+ * Properties of the media that defines it major parameters.
+ *
+ * <p>This can't be changed after the media is created.</p>
+ */
 public class MediaProperties {
 
     private long maxTotalSize;
