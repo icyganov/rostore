@@ -104,7 +104,7 @@ public class ContainerListOperations implements AutoCloseable {
         try {
             final Record record = new Record();
             keyBlockOperations.remove(containerName.getBytes(StandardCharsets.UTF_8), record);
-            try (final DataReader dr = DataReader.open(getMedia().getBlockAllocator(), record.getId())) {
+            try (final DataReader dr = DataReader.open(getMedia().getRootBlockAllocator(), record.getId())) {
                 dr.free();
             }
         } finally {
@@ -136,14 +136,14 @@ public class ContainerListOperations implements AutoCloseable {
                     try {
                         final Container container = new Container(this, containerName, containerMeta);
                         try {
-                            long id = DataWriter.writeObject(getMedia().getBlockAllocator(), container.getDescriptor());
+                            long id = DataWriter.writeObject(getMedia().getRootBlockAllocator(), container.getDescriptor());
                             record = new Record().id(id).addOption(RecordOption.ONLY_INSERT);
                             keyBlockOperations.put(containerName.getBytes(StandardCharsets.UTF_8), record);
                             return container;
                         } catch (final Exception e) {
                             try {
                                 if (record != null) {
-                                    try (final DataReader dr = DataReader.open(getMedia().getBlockAllocator(), record.getId())) {
+                                    try (final DataReader dr = DataReader.open(getMedia().getRootBlockAllocator(), record.getId())) {
                                         dr.free();
                                     }
                                 }
@@ -197,7 +197,7 @@ public class ContainerListOperations implements AutoCloseable {
      * @param media the reference to the file
      */
     public ContainerListOperations(final Media media, final ContainerListProperties containerListProperties) {
-         keyBlockOperations = KeyBlockOperations.create(media.getBlockAllocator(),
+         keyBlockOperations = KeyBlockOperations.create(media.getRootBlockAllocator(),
                  RecordLengths.standardRecordLengths(media.getMediaProperties()));
          containerListHeader = new ContainerListHeader(containerListProperties);
          containerListHeader.setKeyStartIndex(keyBlockOperations.getStartIndex());
@@ -210,7 +210,7 @@ public class ContainerListOperations implements AutoCloseable {
      * @param containerListHeader
      */
     public ContainerListOperations(final Media media, final ContainerListHeader containerListHeader) {
-        this.keyBlockOperations = KeyBlockOperations.load(media.getBlockAllocator(),
+        this.keyBlockOperations = KeyBlockOperations.load(media.getRootBlockAllocator(),
                 containerListHeader.getKeyStartIndex(),
                 RecordLengths.standardRecordLengths(media.getMediaProperties()));
         this.containerListHeader = containerListHeader;

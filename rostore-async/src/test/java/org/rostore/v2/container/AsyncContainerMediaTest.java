@@ -99,7 +99,7 @@ public class AsyncContainerMediaTest {
                 media.getAsyncContainers().remove(containerName);
             }
 
-            media.getMedia().getBlockAllocator().getBlockAllocatorInternal().dump();
+            media.getMedia().getRootBlockAllocator().getBlockAllocatorInternal().dump();
             long usedAfterMedia = media.getMedia().getBlockAllocation().getPayloadSize();
             long freeAfterMedia = media.getMedia().getBlockAllocation().getLockedFreeSize();
             Assertions.assertEquals(freeAfterMedia,freeBeforeMedia,"Free size is wrong");
@@ -109,7 +109,7 @@ public class AsyncContainerMediaTest {
         try (final AsyncContainerMedia media = AsyncContainerMedia.load(file)) {
             long usedAfterMedia = media.getMedia().getBlockAllocation().getPayloadSize();
             long freeAfterMedia = media.getMedia().getBlockAllocation().getLockedFreeSize();
-            media.getMedia().getBlockAllocator().getBlockAllocatorInternal().dump();
+            media.getMedia().getRootBlockAllocator().getBlockAllocatorInternal().dump();
             Assertions.assertEquals(freeAfterMedia,freeBeforeMedia,"Free size is wrong");
             Assertions.assertEquals(usedAfterMedia,usedBeforeMedia,"Used size is wrong");
         }

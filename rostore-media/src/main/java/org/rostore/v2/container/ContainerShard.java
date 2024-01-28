@@ -81,7 +81,7 @@ public class ContainerShard implements Closeable {
     /**
      * Creates a new shard in the storage
      *
-     * <p>As the shard requires its own resources, the {@link Media#getBlockAllocator()} is used to create the obtain them.</p>
+     * <p>As the shard requires its own resources, the {@link Media#getRootBlockAllocator()} is used to create the obtain them.</p>
      *
      * @param container the parent container
      * @param index the index if the shard

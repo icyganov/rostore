@@ -35,10 +35,10 @@ public class MediaTest {
         Assertions.assertEquals(2, blockAllocation.getPayloadSize() / 256);
         Assertions.assertEquals(16, blockAllocation.getTotalLockedSize() / 256);
 
-        CatalogBlockIndices ids1 = media.getBlockAllocator().allocate(BlockType.CATALOG,4);
+        CatalogBlockIndices ids1 = media.getRootBlockAllocator().allocate(BlockType.CATALOG,4);
 
         try {
-            CatalogBlockIndices ids2 = media.getBlockAllocator().allocate(BlockType.CATALOG,1);
+            CatalogBlockIndices ids2 = media.getRootBlockAllocator().allocate(BlockType.CATALOG,1);
             Assertions.fail("Should fail, as number of blocks is depleted");
         } catch (RoStoreException roStoreException) {
         }
@@ -48,7 +48,7 @@ public class MediaTest {
         Assertions.assertEquals(6, blockAllocation.getPayloadSize() / 256);
         Assertions.assertEquals(16, blockAllocation.getTotalLockedSize() / 256);
 
-        media.getBlockAllocator().free(ids1);
+        media.getRootBlockAllocator().free(ids1);
 
         blockAllocation = media.getBlockAllocation();
         Assertions.assertEquals(14, blockAllocation.getLockedFreeSize() / 256);
@@ -117,7 +117,7 @@ public class MediaTest {
         Assertions.assertEquals(2, blockAllocation.getPayloadSize() / 64);
         Assertions.assertEquals(1000, blockAllocation.getTotalLockedSize() / 64);
 
-        BlockAllocator blockAllocator = media.getBlockAllocator();
+        BlockAllocator blockAllocator = media.getRootBlockAllocator();
 
         CatalogBlockIndices total = new CatalogBlockIndices();
 
@@ -198,7 +198,7 @@ public class MediaTest {
         Assertions.assertEquals(2, blockAllocation.getPayloadSize() / 64);
         Assertions.assertEquals(1000, blockAllocation.getTotalLockedSize() / 64);
 
-        BlockAllocator blockAllocator = media.getBlockAllocator();
+        BlockAllocator blockAllocator = media.getRootBlockAllocator();
 
         int[] data = new int [] {2, 6, 1, 3, 10, 1, 2, 6, 10, 4, 9, 0, 2, 5, 4, 1, 8, 7, 8, 9, 6, 7, 5, 3, 4, 10, 1, 7, 9, 7, 3, 1, 1, 7, 3, 4, 2, 6, 4, 8, 10, 10, 5, 0, 0, 4, 1, 3, 2, 1, 4, 1, 4, 2, 1, 1, 1, 1, 8, 2, 7, 5, 7, 7, 5, 0, 2, 8, 4, 8, 1, 2, 4, 5, 0, 8, 5, 5, 3, 1, 4, 4, 1, 7, 1, 5, 6, 3, 3, 5, 6, 6, 4, 8, 9, 3, 4, 9, 8, 5, 10, 2, 2, 8, 9, 4, 1, 5, 5, 3, 5, 6, 2, 1, 2, 2, 6, 4, 2, 3, 6, 2, 4, 2, 4, 2, 4, 8, 2, 5, 0, 5, 6, 4, 4, 1, 4, 1, 7, 9, 9, 5, 2, 2, 5, 7, 4, 3, 2, 2};
         int next = 0;

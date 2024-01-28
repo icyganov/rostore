@@ -46,11 +46,21 @@ public class Media extends RootClosableImpl {
         return blockAllocatorListeners;
     }
 
+    /**
+     * Provides the properties that has been used for the creation of the media
+     *
+     * @return the media properties
+     */
     public MediaProperties getMediaProperties() {
         return mediaProperties;
     }
 
-    public BlockAllocator getBlockAllocator() {
+    /**
+     * Provides the root block allocator.
+     *
+     * @return the root block allocator
+     */
+    public BlockAllocator getRootBlockAllocator() {
         return rootBlockAllocator;
     }
 
