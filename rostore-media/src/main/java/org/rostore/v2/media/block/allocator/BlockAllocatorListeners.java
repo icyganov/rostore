@@ -6,6 +6,9 @@ import org.rostore.v2.media.block.BlockType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is the holder of all block allocator's listeners.
+ */
 public class BlockAllocatorListeners {
 
     private final List<BlockAllocatorListener> blockAllocatorListeners;

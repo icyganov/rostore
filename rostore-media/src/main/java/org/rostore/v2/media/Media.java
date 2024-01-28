@@ -152,11 +152,29 @@ public class Media extends RootClosableImpl {
         }
     }
 
+    /**
+     * This function can be called periodically to close
+     * the unused blocks and sequences.
+     * <p>This is a proactive operation. The clean-up is also executed on every operation,
+     * but to ensure that the clean-up is also executed in the time when media is idling
+     * this operation can be used.</p>
+     */
     public void closeExpired() {
         blockIndexSequences.closeExpired();
         mappedPhysicalBlocks.closeExpired();
     }
 
+    /**
+     * Load an existing media
+     *
+     * <p>A {@param headerStream} is used to read the header information that has previously been stored
+     * at the creation time to the header of the media in the call to {@link #Media(File, MediaProperties, BiConsumer)}.
+     * This allows to restore the entities created in the media.</p>
+     *
+     * @param file a file where the data is stored
+     * @param headerStream consumer that receives both the created media object and a {@link DataReader} that can be used to read
+     *                     additional header information, which allows to extend the media basic functionality.
+     */
     protected Media(final File file, BiConsumer<Media, DataReader> headerStream) {
         logger.log(Level.INFO, "Opening media @" + file);
         this.file = file;
@@ -191,13 +209,12 @@ public class Media extends RootClosableImpl {
         }
     }
 
-
-
     /**
      * Creates a blank media
-     * @param file
-     * @param mediaProperties
-     * @return
+     *
+     * @param file the file where the media should be persisted
+     * @param mediaProperties the properties of the media
+     * @return the constructed media object
      */
     public static Media create(final File file, final MediaProperties mediaProperties) {
         return create(file,
@@ -207,10 +224,10 @@ public class Media extends RootClosableImpl {
 
     /**
      * Creates a new media and store a header class to the header of the media
-     * @param file
-     * @param mediaProperties
-     * @param headerFactory creates a header object that will be stored to the header
-     * @return the created and stored header
+     * @param file the file location where the media data should be persisted
+     * @param mediaProperties the properties of the media
+     * @param headerFactory creates a header object that will be stored as additional information to the media's header
+     * @return the created media object
      * @param <T> a type of the header object, must be serializable by the {@link BinaryMapper}
      */
     public static <T> Media create(final File file, final MediaProperties mediaProperties, final Function<Media, T> headerFactory) {
@@ -220,9 +237,10 @@ public class Media extends RootClosableImpl {
     }
 
     /**
-     * Creates a new media and store with an option to store to headers stream of the media
-     * @param file
-     * @param mediaProperties
+     * Creates a new media and store with an option to store to headers stream of the media.
+     *
+     * @param file the file where the storage data should be persisted
+     * @param mediaProperties the properties of the storage
      * @param headerStream a consumer that can write any binary data to the header
      * @return the created media
      */
@@ -232,9 +250,10 @@ public class Media extends RootClosableImpl {
     }
 
     /**
-     * Load a black data
-     * @param file
-     * @return
+     * Opens the media object from the existing file
+     *
+     * @param file the file where the storage is located
+     * @return the media object
      */
     public static Media open(final File file) {
         return open(file, null);
@@ -242,11 +261,12 @@ public class Media extends RootClosableImpl {
 
     /**
      * Opens a media, reads the header and provides it for further initialization
-     * @param file
+     *
+     * @param file the file where the storage data is located
      * @param headerClass a class of the custom header, must be serializable by {@link BinaryMapper}
-     * @param header
+     * @param header bi consumer that provides both fully initialized media object and the deserialized header object
      * @return the media object
-     * @param <T>
+     * @param <T> the type of the header class
      */
     public static <T> Media open(final File file, final Class<T> headerClass, final BiConsumer<Media, T> header) {
         return open(file, (m, dataReader) -> header.accept(m, dataReader.readObject(headerClass)));
@@ -254,8 +274,10 @@ public class Media extends RootClosableImpl {
 
     /**
      * Opens a media, allows to read the header from a binary stream
-     * @param file
-     * @param headerStream a stream that allows to read from the header
+     *
+     * @param file the file where the storage data is located
+     * @param headerStream consumer that receives both the fully initialized media object and a {@link DataReader} that can be used to
+     *                     read additional header information, to initialize further entities
      * @return opened media
      */
     public static Media open(final File file, final BiConsumer<Media, DataReader> headerStream) {
@@ -263,18 +285,31 @@ public class Media extends RootClosableImpl {
         return media;
     }
 
-    public MappedByteBuffer map(final long index) {
-        long startOffset = index * mediaProperties.getBlockSize();
+    /**
+     * A low-level operation of mapping of the block referenced by its index to
+     * the mapped byte buffer.
+     * <p>This operation should not be used directly by the clients of media,
+     * instead {@link org.rostore.v2.media.block.InternalBlockProvider} should
+     * be used to get access to the block's data.</p>
+     *
+     * @param blockIndex the index of the block
+     *
+     * @return the mapped memory block
+     */
+    public MappedByteBuffer map(final long blockIndex) {
+        long startOffset = blockIndex * mediaProperties.getBlockSize();
         try {
             return randomAccessFile.getChannel().map(FileChannel.MapMode.READ_WRITE, startOffset, mediaProperties.getBlockSize());
         } catch (final IOException ioException) {
-            throw new RoStoreException("Can't map " + file + " from " + startOffset + "(index=" + index + "), length=" + mediaProperties.getBlockSize(), ioException);
+            throw new RoStoreException("Can't map " + file + " from " + startOffset + "(index=" + blockIndex + "), length=" + mediaProperties.getBlockSize(), ioException);
         }
     }
 
     /**
-     * The Block container must be closed after wards
-     * @return
+     * Creates a new Block container, which represents a transactional boundary in ro-store,
+     * which must be closed after usage.
+     *
+     * @return the block container
      */
     public synchronized BlockContainer newBlockContainer() {
         final int blockContainerId = blockContainerCount++;
@@ -283,22 +318,59 @@ public class Media extends RootClosableImpl {
         return blockContainer;
     }
 
+    /**
+     * Provides a block container by its id
+     * <p>Should not be used directly.</p>
+     *
+     * @param blockContainerId the id of the block container
+     * @return the block container
+     */
     public synchronized BlockContainer getBlockContainer(final int blockContainerId) {
         return blockContainers.get(blockContainerId);
     }
 
+    /**
+     * Frees a block container
+     * <p>Should not be used directly.</p>
+     * @param blockContainerId the id of the block container
+     */
     public synchronized void freeBlockContainer(final int blockContainerId) {
         blockContainers.remove(blockContainerId);
     }
 
+    /**
+     * Creates {@link SecondaryBlockAllocator} based on the internal root allocator.
+     * See {@link SecondaryBlockAllocator#create(String, BlockAllocator, long)}
+     *
+     * @param allocatorName the name of the allocator
+     * @param upperBlockNumberLimit the maximum number of blocks
+     * @return the newly created secondary allocator
+     */
     public synchronized BlockAllocator createSecondaryBlockAllocator(final String allocatorName, final long upperBlockNumberLimit) {
         return SecondaryBlockAllocator.create(allocatorName, rootBlockAllocator, upperBlockNumberLimit);
     }
 
+    /**
+     * Loads {@link SecondaryBlockAllocator} based on the internal root allocator.
+     * See {@link SecondaryBlockAllocator#load(String, BlockAllocator, long, long)}
+     *
+     * <p>Media do not hold instances of the secondary allocators, so the client
+     * should hold them and prevent several instances of these allocator to be loaded.</p>
+     *
+     * @param allocatorName the name of the allocator
+     * @param startIndex the first block of the allocator
+     * @param upperBlockNumberLimit the maximum number of blocks
+     * @return the loaded secondary allocator
+     */
     public synchronized BlockAllocator loadSecondaryBlockAllocator(final String allocatorName, final long startIndex, final long upperBlockNumberLimit) {
         return SecondaryBlockAllocator.load(allocatorName, rootBlockAllocator, startIndex, upperBlockNumberLimit);
     }
 
+    /**
+     * Call to this function will free all the blocks allocated in the secondary allocator.
+     *
+     * @param blockAllocator the allocator to clean up
+     */
     public synchronized void removeSecondaryBlockAllocator(final BlockAllocator blockAllocator) {
         blockAllocator.remove();
     }
