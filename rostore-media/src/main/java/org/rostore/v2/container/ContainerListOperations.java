@@ -10,9 +10,7 @@ import org.rostore.v2.data.DataWriter;
 import org.rostore.v2.keys.KeyBlockOperations;
 import org.rostore.v2.keys.KeyList;
 import org.rostore.v2.keys.RecordLengths;
-import org.rostore.v2.media.Closeable;
 import org.rostore.v2.media.Media;
-import org.rostore.v2.media.block.container.Status;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -20,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +90,7 @@ public class ContainerListOperations implements AutoCloseable {
     }
 
 
-    public synchronized MemoryAllocation getMemoryManagement() {
+    public synchronized BlockAllocation getMemoryManagement() {
         throw new RoStoreException("Not implemented yet...");
     }
 

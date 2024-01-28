@@ -137,16 +137,25 @@ public class ContainerShardKeyOperations implements Committable {
         keyBlockOperations.dump();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         keyBlockOperations.close();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Status getStatus() {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void commit() {
         keyBlockOperations.commit();

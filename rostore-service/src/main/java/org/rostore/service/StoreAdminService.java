@@ -9,7 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
-import org.rostore.entity.MemoryAllocationState;
+import org.rostore.entity.BlockAllocationState;
 import org.rostore.entity.media.RoStoreProperties;
 import org.rostore.entity.media.Version;
 import org.rostore.service.apikey.ApiKeyManager;
@@ -101,7 +101,7 @@ public class StoreAdminService {
     public Response storeSpace() {
         apiKeyManager.checkStorePermission(EnumSet.of(Permission.READ));
         final Map<String, Object> ret= new HashMap<>();
-        final MemoryAllocationState mms = MemoryAllocationState.store(roStoreAccessor.getAsyncContainerMedia().getMedia().getMemoryManagement());
+        final BlockAllocationState mms = BlockAllocationState.store(roStoreAccessor.getAsyncContainerMedia().getMedia().getBlockAllocation());
         ret.put("media", mms);
         ret.put("properties", roStoreAccessor.getAsyncContainerMedia().getMedia().getMediaProperties());
         return Response.ok(ret).build();

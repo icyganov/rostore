@@ -1,6 +1,6 @@
 package org.rostore.v2.media;
 
-import org.rostore.entity.MemoryAllocation;
+import org.rostore.entity.BlockAllocation;
 import org.rostore.entity.RoStoreException;
 import org.rostore.entity.media.MediaPropertiesBuilder;
 import org.rostore.v2.data.DataReader;
@@ -54,18 +54,39 @@ public class Media extends RootClosableImpl {
         return rootBlockAllocator;
     }
 
+    /**
+     * Provides information about the objects this {@link Media} holds.
+     *
+     * @return info about the memory consumption
+     */
     public MemoryConsumption getMemoryConsumption() {
         return new MemoryConsumption(mappedPhysicalBlocks.size(), blockIndexSequences.size(), blockContainers.size());
     }
 
+    /**
+     * Provides the set of currently opened {@link org.rostore.v2.seq.BlockIndexSequence}
+     *
+     * @return media's currently active block sequences
+     */
     public BlockIndexSequences getBlockIndexSequences() {
         return blockIndexSequences;
     }
 
+    /**
+     * Provides the set of currently mapped physical blocks
+     *
+     * @return media's currently active blocks
+     */
     public MappedPhysicalBlocks getMappedPhysicalBlocks() {
         return mappedPhysicalBlocks;
     }
 
+    /**
+     * Closes the instance of media.
+     *
+     * <p>This function will not regard any open {@link BlockContainer}, the caller should finish
+     * all the transactions before.</p>
+     */
     @Override
     public void close() {
         super.close();
@@ -77,15 +98,29 @@ public class Media extends RootClosableImpl {
         }
     }
 
-    public MemoryAllocation getMemoryManagement() {
-        return rootBlockAllocator.getBlockAllocatorInternal().getMemoryAllocation();
+    /**
+     * Provides information about block allocation within the media
+     *
+     * <p>As a source the {@link RootBlockAllocator} is used.</p>
+     *
+     * @return the block allocation
+     */
+    public BlockAllocation getBlockAllocation() {
+        return rootBlockAllocator.getBlockAllocatorInternal().getBlockAllocation();
     }
 
     /**
      * Create a new media
      *
-     * @param file
-     * @param mediaProperties
+     * <p>A {@param headerStream} is used to extend current media by any functionality that is build on top of it.</p>
+     * <p>The media object is fully constructed when the consumer is executed, so any construction can happen on
+     * its basis. The consumer should write the necessary data to the {@link DataWriter} so that the state of
+     * the construction can be persisted.</p>
+     *
+     * @param file a file where the data should be persisted
+     * @param mediaProperties the properties of the media
+     * @param headerStream consumer that receives both the created media object and a {@link DataWriter} that can be used to write
+     *                     additional header information, which allows to extend the media header.
      */
     protected Media(final File file, final MediaProperties mediaProperties, final BiConsumer<Media, DataWriter> headerStream) {
         logger.log(Level.INFO, "Create a new media @" + file);
@@ -210,7 +245,7 @@ public class Media extends RootClosableImpl {
      * @param file
      * @param headerClass a class of the custom header, must be serializable by {@link BinaryMapper}
      * @param header
-     * @return
+     * @return the media object
      * @param <T>
      */
     public static <T> Media open(final File file, final Class<T> headerClass, final BiConsumer<Media, T> header) {

@@ -1,7 +1,7 @@
 package rostore.v2.media;
 
 import org.junit.jupiter.api.Assertions;
-import org.rostore.entity.MemoryAllocation;
+import org.rostore.entity.BlockAllocation;
 import org.rostore.entity.media.MediaPropertiesBuilder;
 import rostore.TestFile;
 import org.rostore.v2.catalog.CatalogBlockIndices;
@@ -223,10 +223,10 @@ public class MediaExhaustiveTest {
         mediaPropertiesBuilder.setBlockSize(64);
         Media media = Media.create(file, MediaProperties.from(mediaPropertiesBuilder));
 
-        MemoryAllocation memoryAllocation = media.getMemoryManagement();
-        Assertions.assertEquals(995, memoryAllocation.getLockedFreeSize() / 64);
-        Assertions.assertEquals(5, memoryAllocation.getPayloadSize() / 64);
-        Assertions.assertEquals(1000, memoryAllocation.getTotalLockedSize() / 64);
+        BlockAllocation blockAllocation = media.getBlockAllocation();
+        Assertions.assertEquals(995, blockAllocation.getLockedFreeSize() / 64);
+        Assertions.assertEquals(5, blockAllocation.getPayloadSize() / 64);
+        Assertions.assertEquals(1000, blockAllocation.getTotalLockedSize() / 64);
 
         BlockAllocator blockAllocator = media.createSecondaryBlockAllocator("blah",100);
 
@@ -268,9 +268,9 @@ public class MediaExhaustiveTest {
         driver.print(driver.size()-1);
         media.dump();
 
-        Assertions.assertEquals(993, memoryAllocation.getLockedFreeSize() / 64);
-        Assertions.assertEquals(7, memoryAllocation.getPayloadSize() / 64);
-        Assertions.assertEquals(1000, memoryAllocation.getTotalLockedSize() / 64);
+        Assertions.assertEquals(993, blockAllocation.getLockedFreeSize() / 64);
+        Assertions.assertEquals(7, blockAllocation.getPayloadSize() / 64);
+        Assertions.assertEquals(1000, blockAllocation.getTotalLockedSize() / 64);
 
     }
 

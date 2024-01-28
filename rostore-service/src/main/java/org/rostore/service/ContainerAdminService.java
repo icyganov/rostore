@@ -12,7 +12,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
-import org.rostore.entity.MemoryAllocationState;
+import org.rostore.entity.BlockAllocationState;
 import org.rostore.service.apikey.ApiKeyManager;
 import org.rostore.entity.apikey.Permission;
 import org.rostore.entity.media.ContainerMeta;
@@ -174,10 +174,10 @@ public class ContainerAdminService {
                             responseCode = "200",
                             description = "Container space usage info is returned",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON,
-                                    schema = @Schema(implementation = MemoryAllocationState.class))) })
+                                    schema = @Schema(implementation = BlockAllocationState.class))) })
     public Response getContainerSpace(@PathParam("container") final String containerName) {
         apiKeyManager.checkStorePermission(EnumSet.of(Permission.READ));
-        final MemoryAllocationState memoryManagementState = roStoreAccessor.getAsyncContainerMedia().getAsyncContainers().get(containerName).getContainer().getMemoryAllocation();
+        final BlockAllocationState memoryManagementState = roStoreAccessor.getAsyncContainerMedia().getAsyncContainers().get(containerName).getContainer().getBlockAllocation();
         return Response.ok().entity(memoryManagementState).build();
     }
 }

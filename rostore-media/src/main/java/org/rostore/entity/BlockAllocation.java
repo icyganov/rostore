@@ -3,7 +3,7 @@ package org.rostore.entity;
 /**
  * Information regarding memory usage
  */
-public interface MemoryAllocation {
+public interface BlockAllocation {
 
     /**
      * Get number of bytes used by the data.

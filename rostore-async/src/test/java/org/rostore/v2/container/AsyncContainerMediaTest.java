@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.rostore.TestFile;
-import org.rostore.Utils;
 import org.rostore.entity.Record;
 import org.rostore.entity.media.ContainerMeta;
 import org.rostore.v2.catalog.CatalogBlockIndices;
@@ -14,9 +13,7 @@ import org.rostore.v2.container.async.AsyncStream;
 import org.rostore.v2.container.async.AsyncContainer;
 import org.rostore.entity.media.MediaPropertiesBuilder;
 import org.rostore.v2.media.block.BlockType;
-import org.rostore.v2.media.block.allocator.BlockAllocatorInternal;
 import org.rostore.v2.media.block.allocator.BlockVerifierListener;
-import org.rostore.v2.media.block.allocator.RootBlockAllocator;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -65,8 +62,8 @@ public class AsyncContainerMediaTest {
         try (final AsyncContainerMedia media = AsyncContainerMedia.create(file, AsyncContainerMediaProperties.defaultContainerProperties(mediaProperties))) {
             ContainerMeta containerMeta = new ContainerMeta();
             containerMeta.setShardNumber(1);
-            usedBeforeMedia = media.getMedia().getMemoryManagement().getPayloadSize();
-            freeBeforeMedia = media.getMedia().getMemoryManagement().getLockedFreeSize();
+            usedBeforeMedia = media.getMedia().getBlockAllocation().getPayloadSize();
+            freeBeforeMedia = media.getMedia().getBlockAllocation().getLockedFreeSize();
 
             List<String> containerNames = new ArrayList<>();
             for (int j=0; j<5; j++) {
@@ -74,8 +71,8 @@ public class AsyncContainerMediaTest {
                 containerNames.add(containerName);
                 final AsyncContainer container = media.getAsyncContainers().create(containerName, containerMeta);
 
-                long usedBeforeContainer = media.getMedia().getMemoryManagement().getPayloadSize();
-                long freeBeforeContainer = media.getMedia().getMemoryManagement().getLockedFreeSize();
+                long usedBeforeContainer = media.getMedia().getBlockAllocation().getPayloadSize();
+                long freeBeforeContainer = media.getMedia().getBlockAllocation().getLockedFreeSize();
 
                 List<Future<?>> futures = new ArrayList<>();
 
@@ -91,8 +88,8 @@ public class AsyncContainerMediaTest {
                     } catch (Exception e) {
                     }
                 }
-                long usedAfterContainer = media.getMedia().getMemoryManagement().getPayloadSize();
-                long freeAfterContainer = media.getMedia().getMemoryManagement().getLockedFreeSize();
+                long usedAfterContainer = media.getMedia().getBlockAllocation().getPayloadSize();
+                long freeAfterContainer = media.getMedia().getBlockAllocation().getLockedFreeSize();
                 Assertions.assertEquals(freeAfterContainer,freeBeforeContainer,"Free size is wrong");
                 Assertions.assertEquals(usedAfterContainer,usedBeforeContainer,"Used size is wrong");
             }
@@ -103,15 +100,15 @@ public class AsyncContainerMediaTest {
             }
 
             media.getMedia().getBlockAllocator().getBlockAllocatorInternal().dump();
-            long usedAfterMedia = media.getMedia().getMemoryManagement().getPayloadSize();
-            long freeAfterMedia = media.getMedia().getMemoryManagement().getLockedFreeSize();
+            long usedAfterMedia = media.getMedia().getBlockAllocation().getPayloadSize();
+            long freeAfterMedia = media.getMedia().getBlockAllocation().getLockedFreeSize();
             Assertions.assertEquals(freeAfterMedia,freeBeforeMedia,"Free size is wrong");
             Assertions.assertEquals(usedAfterMedia,usedBeforeMedia,"Used size is wrong");
         }
 
         try (final AsyncContainerMedia media = AsyncContainerMedia.load(file)) {
-            long usedAfterMedia = media.getMedia().getMemoryManagement().getPayloadSize();
-            long freeAfterMedia = media.getMedia().getMemoryManagement().getLockedFreeSize();
+            long usedAfterMedia = media.getMedia().getBlockAllocation().getPayloadSize();
+            long freeAfterMedia = media.getMedia().getBlockAllocation().getLockedFreeSize();
             media.getMedia().getBlockAllocator().getBlockAllocatorInternal().dump();
             Assertions.assertEquals(freeAfterMedia,freeBeforeMedia,"Free size is wrong");
             Assertions.assertEquals(usedAfterMedia,usedBeforeMedia,"Used size is wrong");
@@ -139,8 +136,8 @@ public class AsyncContainerMediaTest {
             media.getMedia().getBlockAllocatorListeners().addListener(listener);
             ContainerMeta containerMeta = new ContainerMeta();
             containerMeta.setShardNumber(3);
-            long usedBefore = media.getMedia().getMemoryManagement().getPayloadSize();
-            long freeBefore = media.getMedia().getMemoryManagement().getLockedFreeSize();
+            long usedBefore = media.getMedia().getBlockAllocation().getPayloadSize();
+            long freeBefore = media.getMedia().getBlockAllocation().getLockedFreeSize();
             snapshot = listener.snapshot();
             try (final AsyncContainer container = media.getAsyncContainers().create("central", containerMeta)) {
                 for(int j=0; j<10; j++) {
@@ -199,7 +196,7 @@ public class AsyncContainerMediaTest {
             media.getAsyncContainers().remove("central");
             Thread.sleep(200);
             media.getMedia().closeExpired();
-            Assertions.assertEquals(media.getMedia().getMemoryManagement().getLockedFreeSize(),freeBefore,"Free size has changed");
+            Assertions.assertEquals(media.getMedia().getBlockAllocation().getLockedFreeSize(),freeBefore,"Free size has changed");
         }
     }
 
@@ -215,8 +212,8 @@ public class AsyncContainerMediaTest {
             //media.getMedia().getBlockAllocatorListeners().addListener(listener);
             ContainerMeta containerMeta = new ContainerMeta();
             containerMeta.setShardNumber(10);
-            long usedBefore = media.getMedia().getMemoryManagement().getPayloadSize();
-            long freeBefore = media.getMedia().getMemoryManagement().getLockedFreeSize();
+            long usedBefore = media.getMedia().getBlockAllocation().getPayloadSize();
+            long freeBefore = media.getMedia().getBlockAllocation().getLockedFreeSize();
 
             for(int k=0; k<10; k++) {
                 String name = "central-" + k;
@@ -276,8 +273,8 @@ public class AsyncContainerMediaTest {
             media.getMedia().closeExpired();
             Assertions.assertEquals(0, media.getMedia().getMemoryConsumption().getBlocksAllocated());
 
-            Assertions.assertEquals(freeBefore, media.getMedia().getMemoryManagement().getLockedFreeSize(), () -> "Free deviation: " + (media.getMedia().getMemoryManagement().getLockedFreeSize()-freeBefore)/4096);
-            Assertions.assertEquals(usedBefore, media.getMedia().getMemoryManagement().getPayloadSize(), () -> "Used deviation: " + (media.getMedia().getMemoryManagement().getPayloadSize()-usedBefore)/4096);
+            Assertions.assertEquals(freeBefore, media.getMedia().getBlockAllocation().getLockedFreeSize(), () -> "Free deviation: " + (media.getMedia().getBlockAllocation().getLockedFreeSize()-freeBefore)/4096);
+            Assertions.assertEquals(usedBefore, media.getMedia().getBlockAllocation().getPayloadSize(), () -> "Used deviation: " + (media.getMedia().getBlockAllocation().getPayloadSize()-usedBefore)/4096);
         }
     }
 
@@ -292,8 +289,8 @@ public class AsyncContainerMediaTest {
         try (final AsyncContainerMedia media = AsyncContainerMedia.create(file, AsyncContainerMediaProperties.defaultContainerProperties(mediaPropertiesBuilder))) {
             ContainerMeta containerMeta = new ContainerMeta();
             containerMeta.setShardNumber(10);
-            long usedBefore = media.getMedia().getMemoryManagement().getPayloadSize();
-            long freeBefore = media.getMedia().getMemoryManagement().getLockedFreeSize();
+            long usedBefore = media.getMedia().getBlockAllocation().getPayloadSize();
+            long freeBefore = media.getMedia().getBlockAllocation().getLockedFreeSize();
             try (final AsyncContainer asyncContainer = media.getAsyncContainers().create("central", containerMeta)) {
 
                 Map<String, List<String>> created = new HashMap<>();
@@ -401,8 +398,8 @@ public class AsyncContainerMediaTest {
             media.getMedia().getMappedPhysicalBlocks().closeUnused();
 
             Assertions.assertEquals(2, media.getMedia().getMemoryConsumption().getBlockContainerAllocated());
-            Assertions.assertEquals(freeBefore, media.getMedia().getMemoryManagement().getLockedFreeSize());
-            Assertions.assertEquals(usedBefore, media.getMedia().getMemoryManagement().getPayloadSize());
+            Assertions.assertEquals(freeBefore, media.getMedia().getBlockAllocation().getLockedFreeSize());
+            Assertions.assertEquals(usedBefore, media.getMedia().getBlockAllocation().getPayloadSize());
         }
     }
 

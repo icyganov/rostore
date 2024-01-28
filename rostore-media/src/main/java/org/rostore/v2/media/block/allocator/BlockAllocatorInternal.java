@@ -1,10 +1,9 @@
 package org.rostore.v2.media.block.allocator;
 
-import org.rostore.entity.MemoryAllocation;
+import org.rostore.entity.BlockAllocation;
 import org.rostore.v2.catalog.CatalogBlockIndices;
 import org.rostore.v2.media.Closeable;
 import org.rostore.v2.media.Media;
-import org.rostore.v2.media.MemoryConsumption;
 import org.rostore.v2.media.block.BlockType;
 
 /**
@@ -24,7 +23,12 @@ import org.rostore.v2.media.block.BlockType;
  */
 public interface BlockAllocatorInternal extends Closeable {
 
-    MemoryAllocation getMemoryAllocation();
+    /**
+     * Provides information about block allocation within this block allocator
+     *
+     * @return the block allocation
+     */
+    BlockAllocation getBlockAllocation();
 
     long getFreeBlocks();
 

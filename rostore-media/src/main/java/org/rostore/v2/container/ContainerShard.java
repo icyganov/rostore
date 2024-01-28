@@ -1,6 +1,6 @@
 package org.rostore.v2.container;
 
-import org.rostore.entity.MemoryAllocation;
+import org.rostore.entity.BlockAllocation;
 import org.rostore.entity.Record;
 import org.rostore.entity.RoStoreException;
 import org.rostore.v2.data.DataReader;
@@ -123,8 +123,13 @@ public class ContainerShard implements Closeable {
         }
     }
 
-    public MemoryAllocation getMemoryAllocation() {
-        return shardAllocator.getMemoryAllocation();
+    /**
+     * Provides information about block allocation within the shard
+     *
+     * @return the block allocation
+     */
+    public BlockAllocation getBlockAllocation() {
+        return shardAllocator.getBlockAllocation();
     }
 
     /**

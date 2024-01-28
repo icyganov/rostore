@@ -1,6 +1,6 @@
 package org.rostore.v2.media.block.allocator;
 
-import org.rostore.entity.MemoryAllocation;
+import org.rostore.entity.BlockAllocation;
 import org.rostore.v2.catalog.CatalogBlockIndices;
 import org.rostore.v2.media.Closeable;
 import org.rostore.v2.media.Media;
@@ -30,8 +30,13 @@ public class BlockAllocator implements Closeable {
         return new BlockAllocator(blockAllocatorInternal);
     }
 
-    public MemoryAllocation getMemoryAllocation() {
-        return blockAllocatorInternal.getMemoryAllocation();
+    /**
+     * Provides information about block allocation within this block allocator
+     *
+     * @return the block allocation
+     */
+    public BlockAllocation getBlockAllocation() {
+        return blockAllocatorInternal.getBlockAllocation();
     }
 
     public BlockAllocatorInternal getBlockAllocatorInternal() {

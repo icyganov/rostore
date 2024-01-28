@@ -11,7 +11,6 @@ import org.rostore.v2.media.Media;
 import org.rostore.v2.media.MediaProperties;
 import org.rostore.v2.media.block.allocator.BlockAllocator;
 import org.rostore.v2.media.block.container.BlockContainer;
-import org.rostore.v2.seq.Properties;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +28,7 @@ public class KeysTest {
         mediaPropertiesBuilder.setBlockSize(40);
         Media media = Media.create(file, MediaProperties.from(mediaPropertiesBuilder));
 
-        Assertions.assertEquals(2 *40, media.getMemoryManagement().getPayloadSize());
+        Assertions.assertEquals(2 *40, media.getBlockAllocation().getPayloadSize());
 
         BlockContainer bc = media.newBlockContainer();
         BlockAllocator secondaryBlockAllocator = media.createSecondaryBlockAllocator("blah",
@@ -49,7 +48,7 @@ public class KeysTest {
 
         secondaryBlockAllocator.remove();
 
-        Assertions.assertEquals(2 *40, media.getMemoryManagement().getPayloadSize());
+        Assertions.assertEquals(2 *40, media.getBlockAllocation().getPayloadSize());
 
     }
 

@@ -1,7 +1,7 @@
 package org.rostore.v2.media.block.allocator;
 
-import org.rostore.entity.MemoryAllocation;
-import org.rostore.entity.MemoryAllocationState;
+import org.rostore.entity.BlockAllocation;
+import org.rostore.entity.BlockAllocationState;
 import org.rostore.entity.QuotaExceededException;
 import org.rostore.v2.catalog.CachedCatalogBlockOperations;
 import org.rostore.v2.catalog.CatalogBlockIndices;
@@ -78,10 +78,10 @@ public class SecondaryBlockAllocator {
                     org.rostore.v2.media.block.allocator.Properties.SECONDARY_ALLOCATOR_CACHE_MAX_SIZE);
 
             @Override
-            public MemoryAllocation getMemoryAllocation() {
+            public BlockAllocation getBlockAllocation() {
                 long payloadBlocks = reservedBlocksOperations.getAddedNumber() * getMedia().getMediaProperties().getBlockSize();
                 long lockedFreeBlocks = reservedBlocksOperations.getCachedBlockNumber() * getMedia().getMediaProperties().getBlockSize();
-                return MemoryAllocationState.init(0,
+                return BlockAllocationState.init(0,
                         lockedFreeBlocks, payloadBlocks);
             }
 

@@ -8,7 +8,8 @@ import java.util.List;
 
 /**
  * This is the list of blocks which is used in the sequences
- * Every block starts with nextBlock reference
+ *
+ * <p>Every block starts with nextBlock reference.</p>
  */
 public class BlockIndexSequence implements AutoCloseable {
 

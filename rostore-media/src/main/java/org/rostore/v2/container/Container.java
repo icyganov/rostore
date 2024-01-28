@@ -1,6 +1,6 @@
 package org.rostore.v2.container;
 
-import org.rostore.entity.MemoryAllocationState;
+import org.rostore.entity.BlockAllocationState;
 import org.rostore.entity.RoStoreException;
 import org.rostore.entity.media.ContainerMeta;
 import org.rostore.v2.media.Closeable;
@@ -27,11 +27,11 @@ public class Container implements Closeable {
 
     private Status status = Status.OPENED;
 
-    public MemoryAllocationState getMemoryAllocation() {
-        final MemoryAllocationState memoryAllocationState = MemoryAllocationState.init();
+    public BlockAllocationState getBlockAllocation() {
+        final BlockAllocationState memoryAllocationState = BlockAllocationState.init();
         for(int i = 0; i< descriptor.getContainerMeta().getShardNumber(); i++) {
             final ContainerShard containerShard = getShard(i);
-            memoryAllocationState.plus(containerShard.getMemoryAllocation());
+            memoryAllocationState.plus(containerShard.getBlockAllocation());
         }
         return memoryAllocationState;
     }
@@ -71,7 +71,7 @@ public class Container implements Closeable {
                     media.getMediaProperties().getMaxTotalSize()
                     + "B.");
         }
-        long totalFreeSize = media.getMemoryManagement().getLockedFreeSize();
+        long totalFreeSize = media.getBlockAllocation().getLockedFreeSize();
         // allocator size + key + 1 (header)
         long minShardSize = (Properties.SECONDARY_ALLOCATOR_CACHE_MAX_SIZE + org.rostore.v2.seq.Properties.MAX_FREE_BLOCK_NUMBER + 1);
         // shard sizes + 1 (header)
