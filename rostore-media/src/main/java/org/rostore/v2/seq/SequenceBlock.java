@@ -12,7 +12,7 @@ import org.rostore.v2.media.block.container.Status;
 import java.util.function.Function;
 
 /**
- *
+ * Represents a block that is embedded in {@link BlockSequence}
  */
 public abstract class SequenceBlock implements Closeable {
 

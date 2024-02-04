@@ -1,7 +1,7 @@
 package org.rostore.entity;
 
 /**
- * Information regarding memory usage
+ * Information regarding allocation of the blocks with the ro-store components
  */
 public interface BlockAllocation {
 

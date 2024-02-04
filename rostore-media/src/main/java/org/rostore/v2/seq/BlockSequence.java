@@ -268,15 +268,30 @@ public class BlockSequence<T extends SequenceBlock> extends RootClosableImpl {
         blockIndexSequence.markSequenceUsed();
     }
 
+    /**
+     * Provides a block by the sequence number, starting from 0
+     *
+     * @param seqIndex the index in the sequence
+     * @return the block from the sequence
+     */
     public Block getBlockByIndex(final int seqIndex) {
         checkOpened();
         return blockProvider.getBlockContainer().getBlock(blockIndexSequence.getBlockIndex(seqIndex), blockType);
     }
 
+    /**
+     * Provides the underlying block index sequence
+     * @return the block index sequence
+     */
     public BlockIndexSequence getBlockIndexSequence() {
         return blockIndexSequence;
     }
 
+    /**
+     * Closes an instance of the block sequence, and
+     * decrements the number of references in {@link BlockIndexSequence}.
+     * <p>Once the number of references in {@link BlockIndexSequence} is 0, the block index sequence can be garbage collected.</p>
+     */
     @Override
     public void close() {
         super.close();
