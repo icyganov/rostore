@@ -4,7 +4,7 @@ import org.rostore.entity.RoStoreException;
 
 public class CatalogBlockEntryInstance {
 
-    final CatalogBlockEntryBase catalogBlockEntry;
+    final CatalogBlockEntry catalogBlockEntry;
     final private long entryHash;
     final private long start;
     final private long stop;
@@ -40,7 +40,7 @@ public class CatalogBlockEntryInstance {
         this.catalogBlockEntry = catalogBlockEntry;
     }
 
-    public CatalogBlockEntryInstance(final CatalogBlockEntryBase catalogBlockEntry, long hash) {
+    public CatalogBlockEntryInstance(final CatalogBlockEntry catalogBlockEntry, long hash) {
         this.entryHash = hash;
         this.catalogBlockEntry = catalogBlockEntry;
         if (hash != -1) {

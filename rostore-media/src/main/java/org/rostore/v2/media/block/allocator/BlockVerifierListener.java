@@ -7,6 +7,10 @@ import org.rostore.v2.media.block.BlockType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Special kind of listener that can be used to verify the block allocations
+ * <p>It is a debugging tool.</p>
+ */
 public class BlockVerifierListener implements BlockAllocatorListener {
 
     private final Map<String, Map<Long, BlockType>> allocated;
