@@ -10,6 +10,18 @@ import org.rostore.v2.seq.SequenceBlock;
 
 import java.util.function.Function;
 
+/**
+ * This is an extension of sequence block that maps the block area as
+ * a set of the fixed-sized entries.
+ * <p>All the entries are stored at the beginning of the block, so the used area of block differs from block to block.</p>
+ * <p>Block stores the number of entries that has been added to the block.</p>
+ * <p>The nature of the entries and their size can be different, but once set stays the same in all blocks of the sequence.</p>
+ * <p>The block allows to store an extra header. The header size differentiates between the
+ * first block (the header of the first block in the sequence) and
+ * the regular block's header. This allow to store additional data before all the entries in the block.</p>
+ *
+ * @param <T> a class representing the entries
+ */
 public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
 
     private final T fixSizeEntry;
@@ -18,14 +30,27 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
 
     private final EntrySizeListener newEntryNumberListener;
 
+    /**
+     * A block provider based on the one of associated {@link BlockSequence}
+     * @return the block provider
+     */
     public BlockProvider getBlockProvider() {
         return super.getBlockSequence().getBlockProvider();
     }
 
+    /**
+     * Provides an associated entry (which contain the real business logic)
+     * @return the entry
+     */
     public T getEntry() {
         return fixSizeEntry;
     }
 
+    /**
+     * Provides a current header's size
+     *
+     * @return the size of the header
+     */
     public int getHeaderSize() {
         throwExceptionIfInvalid("header size");
         if (isRoot()) {
@@ -34,16 +59,26 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         return getRegularHeaderSize();
     }
 
+    /**
+     * Provides the size of all block's headers except of the first one
+     * @return regular size of the header in bytes
+     */
     public int getRegularHeaderSize() {
         return super.getHeaderSize() + bytesPerEntryNumber;
     }
 
+    /**
+     * Provides the header's size of the first block
+     *
+     * @return the size in bytes of the first block's header
+     */
     public int getFirstHeaderSize() {
         return getRegularHeaderSize() + firstHeaderSize;
     }
 
     /**
-     * @return the number of entries fit into one free block
+     * Provides a total entry capacity of the block
+     * @return the number of entries that can fit into one free block
      */
     public int getEntryCapacity() {
         throwExceptionIfInvalid("get capacity");
@@ -56,8 +91,14 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         }
     }
 
-    public int addEntriesNumber(int number) {
-        throwExceptionIfInvalid("dec number of entries");
+    /**
+     * Adds number of entries in this block
+     *
+     * @param number the number of entries to add (if positive) or remove (if negative)
+     * @return the total number of entries added to the current block
+     */
+    public int addEntriesNumber(final int number) {
+        throwExceptionIfInvalid("add number of entries");
         final Block block = getBlock();
         block.position(getBlockSequence().getBlockProvider().getBlockContainer().getMedia().getMediaProperties().getMapperProperties().getBytesPerBlockIndex());
         long oldNumber = block.getLong(bytesPerEntryNumber);
@@ -71,6 +112,11 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         return (int)result;
     }
 
+    /**
+     * Provides a number of entries added to the block
+     *
+     * @return number of entries
+     */
     public int getEntriesNumber() {
         throwExceptionIfInvalid("get number of entries");
         final Block block = getBlock();
@@ -78,17 +124,29 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         return (int)block.getLong(bytesPerEntryNumber);
     }
 
+    /**
+     * Provides an indication if the current block has free space
+     *
+     * @return {@code true} if there is a free space for at least one additional entry
+     */
     public boolean hasFreeSpace() {
         throwExceptionIfInvalid("check free space");
         return getEntryCapacity() - getEntriesNumber() != 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void createNewAfter() {
         throwExceptionIfInvalid("create new after");
         super.createNewAfter();
         fixSizeEntry.invalidate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean isUnused() {
         return getEntriesNumber() == 0;
@@ -155,8 +213,8 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         }
     }
 
-    public void moveTo(int index) {
-        super.moveTo(index);
+    public void moveTo(int seqIndex) {
+        super.moveTo(seqIndex);
         if (fixSizeEntry != null) {
             // could be null in construction phase
             if (super.invalid()) {

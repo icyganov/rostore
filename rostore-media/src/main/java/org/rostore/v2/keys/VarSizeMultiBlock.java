@@ -7,8 +7,6 @@ import org.rostore.v2.media.block.BlockType;
 
 public class VarSizeMultiBlock {
 
-    public static final int MAX_STRING_KEY_REPRESENTATION = 50;
-
     private long currentBlockIndex;
     private int index;
     private final VarSizeBlock root;
@@ -20,8 +18,8 @@ public class VarSizeMultiBlock {
             if (root.isMultiBlock()) {
                 long size = getDataSize();
                 long representationSize = size;
-                if (representationSize > MAX_STRING_KEY_REPRESENTATION) {
-                    representationSize = MAX_STRING_KEY_REPRESENTATION;
+                if (representationSize > Properties.MAX_STRING_KEY_REPRESENTATION) {
+                    representationSize = Properties.MAX_STRING_KEY_REPRESENTATION;
                 }
                 final String content = toString((int)representationSize);
                 String nx = getNextBlockIndex()==0?" x":" nx " + getNextBlockIndex();
