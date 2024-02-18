@@ -26,7 +26,7 @@ public class Utils {
     /**
      * Converts the time-to-live to end-of-live time
      * @param ttl in seconds
-     * @return
+     * @return eol
      */
     public final static long ttl2eol(final long ttl) {
         if (ttl == TTL_FOREVER) {

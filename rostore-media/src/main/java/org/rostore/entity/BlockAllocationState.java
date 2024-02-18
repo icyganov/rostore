@@ -12,7 +12,15 @@ public class BlockAllocationState implements BlockAllocation {
     }
 
 
-    public static BlockAllocationState init(long totalLockedSize, long lockedFreeSize, long payloadSize) {
+    /**
+     * Initializes the state object
+     *
+     * @param totalLockedSize the total size of the locked space
+     * @param lockedFreeSize number of bytes free in the total locked size
+     * @param payloadSize the used bytes number of total locked
+     * @return the persistent object
+     */
+    public static BlockAllocationState init(final long totalLockedSize, final long lockedFreeSize, final long payloadSize) {
         BlockAllocationState memoryAllocationState = new BlockAllocationState();
         memoryAllocationState.totalLockedSize = totalLockedSize;
         memoryAllocationState.lockedFreeSize = lockedFreeSize;
@@ -20,16 +28,32 @@ public class BlockAllocationState implements BlockAllocation {
         return memoryAllocationState;
     }
 
+    /**
+     * Creates a static copy of the provided {@link BlockAllocation}
+     *
+     * @param blockAllocation the object to get data from
+     * @return the persistent block allocation
+     */
     public static BlockAllocationState store(final BlockAllocation blockAllocation) {
         return new BlockAllocationState(blockAllocation);
     }
 
+    /**
+     * Subtracts the sizes from the provided object to this object
+     *
+     * @param blockAllocation the provided object
+     */
     public synchronized void minus(final BlockAllocation blockAllocation) {
         payloadSize -= blockAllocation.getPayloadSize();
         totalLockedSize -= blockAllocation.getTotalLockedSize();
         lockedFreeSize -= blockAllocation.getLockedFreeSize();
     }
 
+    /**
+     * Adds the sizes from the provided object to this object
+     *
+     * @param blockAllocation the provided object
+     */
     public synchronized void plus(final BlockAllocation blockAllocation) {
         payloadSize += blockAllocation.getPayloadSize();
         totalLockedSize += blockAllocation.getTotalLockedSize();
@@ -54,16 +78,25 @@ public class BlockAllocationState implements BlockAllocation {
         lockedFreeSize = blockAllocation.getLockedFreeSize();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getPayloadSize() {
         return payloadSize;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getTotalLockedSize() {
         return totalLockedSize;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getLockedFreeSize() {
         return lockedFreeSize;

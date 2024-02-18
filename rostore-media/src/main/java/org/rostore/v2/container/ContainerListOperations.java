@@ -130,7 +130,7 @@ public class ContainerListOperations implements AutoCloseable {
                 try {
                     Record record = keyBlockOperations.getRecord(containerName.getBytes(StandardCharsets.UTF_8));
                     if (record != null) {
-                        throw new ContainerAlreadyExists(containerName);
+                        throw new ContainerAlreadyExistsException(containerName);
                     }
                     // the next could crash in case no space available
                     try {

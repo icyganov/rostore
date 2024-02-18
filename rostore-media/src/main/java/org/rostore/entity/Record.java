@@ -47,7 +47,7 @@ public class Record {
     /**
      * The Id associated with the key-value pair.
      *
-     * @return
+     * @return the id
      */
     public long getId() {
         return id;
@@ -55,22 +55,37 @@ public class Record {
 
     /**
      * Sets the id to be stored with the record.
+     *
      * @param id the id
-     * @return the recocd object
+     * @return the record object
      */
     public Record id(long id) {
         this.id = id;
         return this;
     }
 
+    /**
+     * Calculates the end of life in terms of unix epoc
+     *
+     * @return the unix timestamp when the record will expire or 0 if the object is not expected to expire
+     */
     public long getUnixEol() {
         return Utils.eol2unix(eol);
     }
 
+    /**
+     * Gets ttl is seconds
+     * @return the ttl in seconds
+     */
     public long getTtl() {
         return Utils.eol2ttl(eol);
     }
 
+    /**
+     * Returns end of life as it stored in the record
+     *
+     * @return the eof of the record
+     */
     public long getEol() {
         return eol;
     }
@@ -80,11 +95,22 @@ public class Record {
         return this;
     }
 
-    public Record eol(long eol) {
+    /**
+     * Sets end of live of the record
+     *
+     * @param eol the eol of the record
+     * @return the record object
+     */
+    public Record eol(final long eol) {
         this.eol = eol;
         return this;
     }
 
+    /**
+     * Increment version
+     * <p>Function will trim the counter by the number of bytes</p>
+     * @param lengthBytes the number of bytes to trim the version
+     */
     public void incrementVersion(final int lengthBytes) {
         if (version != Utils.VERSION_UNDEFINED) {
             version++;
@@ -95,24 +121,51 @@ public class Record {
         }
     }
 
+    /**
+     * Provides a version as set to record
+     *
+     * @return the version
+     */
     public long getVersion() {
         return version;
     }
 
-    public Record version(long version) {
+    /**
+     * Sets a version to the record
+     *
+     * @param version a version to be set
+     * @return the record object
+     */
+    public Record version(final long version) {
         this.version = version;
         return this;
     }
 
+    /**
+     * Checks if the record contains a provided option
+     *
+     * @param option an option to lookup
+     * @return {@code true} if option is available
+     */
     public boolean hasOption(final RecordOption option) {
         return options.contains(option);
     }
 
+    /**
+     * Adds an option to the record object
+     * @param recordOption an option to add
+     * @return the record object
+     */
     public Record addOption(final RecordOption recordOption) {
         this.options.add(recordOption);
         return this;
     }
 
+    /**
+     * Adds a set of options to the record object
+     * @param recordOptions an option set to add
+     * @return the record object
+     */
     public Record addOptions(final Set<RecordOption> recordOptions) {
         if (recordOptions != null) {
             this.options.addAll(recordOptions);

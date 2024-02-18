@@ -77,7 +77,7 @@ public class RestError {
                 status = quotaStatusCode;
             } else if (thr instanceof VersionMismatchInitException ||
                     thr instanceof VersionMismatchException ||
-                    thr instanceof ContainerAlreadyExists) {
+                    thr instanceof ContainerAlreadyExistsException) {
                 status = Response.Status.CONFLICT;
                 unexpectedError = false;
             } else if (thr instanceof EOLIncorrectException) {

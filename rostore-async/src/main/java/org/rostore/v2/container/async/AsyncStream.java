@@ -5,7 +5,6 @@ import org.rostore.entity.RoStoreException;
 import org.rostore.entity.StreamProcessingException;
 
 import java.util.concurrent.*;
-import java.util.function.Consumer;
 
 /**
  * This class is a wrapper around the stream (input or output).
@@ -61,6 +60,7 @@ public class AsyncStream<S extends AutoCloseable> implements AutoCloseable, Futu
      * can only be executed once.
      *
      * @param runnable the callback the async process implements
+     * @throws StreamProcessingException wraps any exception can happen in the processing
      */
     public final void processFunction(final AsyncFunction<S> runnable) {
         start();
@@ -73,7 +73,7 @@ public class AsyncStream<S extends AutoCloseable> implements AutoCloseable, Futu
         } catch (final Exception e) {
             status = AsyncStatus.ERROR;
             this.exception = e;
-            StreamProcessingException streamProcessingException = new StreamProcessingException(e);
+            final StreamProcessingException streamProcessingException = new StreamProcessingException(e);
             if (asyncListener != null) {
                 asyncListener.error(e);
                 asyncListener.status(status);
