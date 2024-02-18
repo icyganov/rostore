@@ -197,10 +197,6 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         root();
     }
 
-    public boolean valid() {
-        return super.valid();
-    }
-
     public String toString() {
         String validPart;
         if (valid()) {
@@ -212,6 +208,9 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         return "FixSizeEntryBlock: " + validPart;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void invalidate() {
         super.invalidate();
         if (fixSizeEntry != null) {
@@ -220,6 +219,11 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         }
     }
 
+    /**
+     * Sets the current location of block to the specified sequence index.
+     * <p>It also will set the index of entry to the first one.</p>
+     * @param seqIndex the relative index in the sequence of the block
+     */
     public void moveTo(int seqIndex) {
         super.moveTo(seqIndex);
         if (fixSizeEntry != null) {
@@ -227,7 +231,7 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
             if (super.invalid()) {
                 fixSizeEntry.invalidate();
             } else {
-                fixSizeEntry.moveTo(0);
+                fixSizeEntry.first();
             }
         }
     }

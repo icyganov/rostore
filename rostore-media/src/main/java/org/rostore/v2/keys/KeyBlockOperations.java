@@ -44,8 +44,8 @@ public class KeyBlockOperations implements Committable {
                 if (varSizeBlock.isMultiBlock()) {
                     varSizeMultiBlock.free();
                 } else {
-                    if (!toFree.contains(keyBlockEntry.getBlockIndex())) {
-                        toFree.add(keyBlockEntry.getBlockIndex(),keyBlockEntry.getBlockIndex());
+                    if (!toFree.contains(keyBlockEntry.getKeyBlockIndex())) {
+                        toFree.add(keyBlockEntry.getKeyBlockIndex(),keyBlockEntry.getKeyBlockIndex());
                     }
                 }
             }
@@ -106,7 +106,7 @@ public class KeyBlockOperations implements Committable {
     }
 
     /**
-     * This function is to lookup the expired entries and
+     * This function is to look up the expired entries and
      * remove them
      *
      * @param blockIndex the key block to lookup in
@@ -357,7 +357,7 @@ public class KeyBlockOperations implements Committable {
 
     private void insertFirstEntry(final byte[] key, final Record record) {
         if (shouldBeMultiBlock(key)) {
-            long blockIndex = varSizeMultiBlock.create(key);
+            long blockIndex = varSizeMultiBlock.put(key);
             insertKeyEntry(blockIndex, 0, record);
         } else {
             if (keyBlockEntry.invalid()) {
@@ -382,7 +382,7 @@ public class KeyBlockOperations implements Committable {
 
     private void expandLastEntry(final byte[] key, final Record record) {
         if (shouldBeMultiBlock(key)) {
-            long blockIndex = varSizeMultiBlock.create(key);
+            long blockIndex = varSizeMultiBlock.put(key);
             expandKeyEntry(blockIndex, 0, record);
         } else {
             if (varSizeBlock.isMultiEntry()) {
@@ -410,7 +410,7 @@ public class KeyBlockOperations implements Committable {
     private void insertBeforeEntry(final byte[] key, final Record record) {
         if (shouldBeMultiBlock(key)) {
             // it is going to be a multi block
-            long blockIndex = varSizeMultiBlock.create(key);
+            long blockIndex = varSizeMultiBlock.put(key);
             if (varSizeBlock.isMultiBlock()) {
                 // this also was a multiblock
                 insertKeyEntry(blockIndex, 0, record);
@@ -486,8 +486,8 @@ public class KeyBlockOperations implements Committable {
                         }
                     }
                     keyBlockEntry.moveToHash(hash);
-                    long offset = keyBlockEntry.getBlockOffset();
-                    long blockIndex = keyBlockEntry.getBlockIndex();
+                    long offset = keyBlockEntry.getKeyBlockOffset();
+                    long blockIndex = keyBlockEntry.getKeyBlockIndex();
                     final Block nextBlock = varSizeBlock.getBlockProvider().allocateBlock(BlockType.KEY);
                     long spaceBeFreed = varSizeBlock.getBlockProvider().getBlockContainer().getMedia().getMediaProperties().getBlockSize() - offset;
                     if (spaceBeFreed > key.length) {
@@ -516,8 +516,8 @@ public class KeyBlockOperations implements Committable {
     }
 
     private void fillNewKeyEntry(final long blockIndex, final long blockOffset, final Record record) {
-        keyBlockEntry.setBlockIndex(blockIndex);
-        keyBlockEntry.setBlockOffset(blockOffset);
+        keyBlockEntry.setKeyBlockIndex(blockIndex);
+        keyBlockEntry.setKeyBlockOffset(blockOffset);
         if (!record.hasOption(RecordOption.OVERRIDE_VERSION)) {
             record.incrementVersion(keyBlockEntry.getRecordLengths().getVersionLength());
         }
@@ -545,19 +545,19 @@ public class KeyBlockOperations implements Committable {
     
     private void correctAfterMove(long newBlockIndex, long newLocationOffset) {
         long correction = -varSizeEntry.getOffset()+varSizeBlock.getMultiEntryHeaderSize() + newLocationOffset;
-        long oldBlockIndex = keyBlockEntry.getBlockIndex();
-        while(keyBlockEntry.valid() && keyBlockEntry.getBlockIndex() == oldBlockIndex) {
-            keyBlockEntry.setBlockIndex(newBlockIndex);
-            keyBlockEntry.incBlockOffset(correction);
+        long oldBlockIndex = keyBlockEntry.getKeyBlockIndex();
+        while(keyBlockEntry.valid() && keyBlockEntry.getKeyBlockIndex() == oldBlockIndex) {
+            keyBlockEntry.setKeyBlockIndex(newBlockIndex);
+            keyBlockEntry.incKeyBlockOffset(correction);
             nextKeyEntry();
         }
     }
 
     private void correctAfterInsert(final long size) {
-        long blockIndex = keyBlockEntry.getBlockIndex();
+        long blockIndex = keyBlockEntry.getKeyBlockIndex();
         nextKeyEntry();
-        while(keyBlockEntry.valid() && keyBlockEntry.getBlockIndex() == blockIndex) {
-            keyBlockEntry.incBlockOffset(size);
+        while(keyBlockEntry.valid() && keyBlockEntry.getKeyBlockIndex() == blockIndex) {
+            keyBlockEntry.incKeyBlockOffset(size);
             nextKeyEntry();
         }
     }
@@ -730,7 +730,7 @@ public class KeyBlockOperations implements Committable {
         long timeSec = System.currentTimeMillis()/1000;
         while(true) {
             if (!keyBlockEntry.isExpired(timeSec)) {
-                final byte[] key = varSizeBlock.extract();
+                final byte[] key = varSizeBlock.get();
                 if (startWithKey != null) {
                     if (key.length < startWithKey.length) {
                         return keyList;

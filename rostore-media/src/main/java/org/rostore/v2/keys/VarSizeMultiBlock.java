@@ -1,13 +1,24 @@
 package org.rostore.v2.keys;
 
 import org.rostore.Utils;
-import org.rostore.v2.catalog.CatalogBlockIndices;
 import org.rostore.v2.media.block.Block;
 import org.rostore.v2.media.block.BlockType;
 
+/**
+ * This class is used when the key data exceeds the size of block.
+ * <p>In this case a sequence of blocks is allocated to store the data.</p>
+ * <p>This class acts like a window to the currently selected block within this sequence.</p>
+ * <p>The data is accessed here in the sequential manner.</p>
+ */
 public class VarSizeMultiBlock {
 
+    /**
+     * Absolute index of the block in the storage
+     */
     private long currentBlockIndex;
+    /**
+     * Index of the block within sequence
+     */
     private int index;
     private final VarSizeBlock root;
 
@@ -64,6 +75,11 @@ public class VarSizeMultiBlock {
         }
     }
 
+    /**
+     * Creates a multi block
+     *
+     * @param root the root block
+     */
     protected VarSizeMultiBlock(final VarSizeBlock root) {
         this.root = root;
         if (root.valid()) {
@@ -73,12 +89,21 @@ public class VarSizeMultiBlock {
         }
     }
 
+    /**
+     * Provides the index of the next block
+     * <p>This is only non-zero if there is the next block</p>
+     *
+     * @return the index of the next block
+     */
     public long getNextBlockIndex() {
         final Block block = getBlock();
         block.position(root.getBlockIndex() == currentBlockIndex?1:0);
         return block.getLong(root.getBlockProvider().getMedia().getMediaProperties().getMapperProperties().getBytesPerBlockIndex());
     }
 
+    /**
+     * Free all the blocks in the multi block sequence
+     */
     public void free() {
         root();
         long nextBlock = getNextBlockIndex();
@@ -95,7 +120,7 @@ public class VarSizeMultiBlock {
 
     /**
      * Moves to the next block
-     * @return true if there is new block
+     * @return {@code true} if there is new block
      */
     public boolean next() {
         long nextBlockIndex = getNextBlockIndex();
@@ -108,10 +133,21 @@ public class VarSizeMultiBlock {
         }
     }
 
+    /**
+     * Provides a block associated with current position
+     *
+     * @return the block
+     */
     public Block getBlock() {
         return root.getBlockProvider().getBlockContainer().getBlock(currentBlockIndex, BlockType.KEY);
     }
 
+    /**
+     * Provides a header size in bytes.
+     * <p>For multi block the first block in the sequence will have a greater header than the rest</p>
+     *
+     * @return the size in bytes
+     */
     public int getHeaderSize() {
         if (isRoot()) {
             return root.getHeaderSize();
@@ -120,34 +156,19 @@ public class VarSizeMultiBlock {
         }
     }
 
+    /**
+     * Identifies if this is the first block in the sequence
+     *
+     * @return {@code true} if it is the first one
+     */
     public boolean isRoot() {
         return currentBlockIndex == root.getBlockIndex();
     }
 
-    public int computeRootMultiBlockHeaderSize(long dataSize) {
-        return Utils.computeBytesForMaxValue(dataSize) + root.getBlockProvider().getMedia().getMediaProperties().getMapperProperties().getBytesPerBlockIndex() + 1;
-    }
-
-    public int computeRootMultiBlockDataCapacity(long dataSize) {
-        return root.getBlockProvider().getMedia().getMediaProperties().getBlockSize() - computeRootMultiBlockHeaderSize(dataSize);
-    }
-
-    public long getBlockNumber() {
-        root();
-        long number = 1;
-        while(next()) {
-            number++;
-        }
-        return number;
-    }
-
-    public void addIndices(final CatalogBlockIndices catalogBlockIndices) {
-        root();
-        while(next()) {
-            catalogBlockIndices.add(currentBlockIndex,currentBlockIndex);
-        }
-    }
-
+    /**
+     * Provides the total size of the data stored in the multi block
+     * @return the size of data in bytes
+     */
     public long getDataSize() {
         final Block rootBlock = root.getBlock();
         rootBlock.position(0);
@@ -156,7 +177,15 @@ public class VarSizeMultiBlock {
         return rootBlock.getLong(preamble);
     }
 
-    public long create(final byte[] data) {
+    /**
+     * Stores the key data to the multi block sequence.
+     *
+     * <p>Blocks are allocated as they requested.</p>
+     *
+     * @param data the key data to store
+     * @return the index of the first block
+     */
+    public long put(final byte[] data) {
         final Block rootBlock = root.getBlockProvider().allocateBlock(BlockType.KEY);
         final byte preamble = (byte)Utils.computeBytesForMaxValue(data.length);
         rootBlock.putByte(preamble);
@@ -189,10 +218,19 @@ public class VarSizeMultiBlock {
         return rootBlock.getAbsoluteIndex();
     }
 
+    /**
+     * Provides a total size of space within the current block
+     *
+     * @return the capacity of bytes
+     */
     public int getDataCapacity() {
         return root.getBlockProvider().getMedia().getMediaProperties().getBlockSize() - getHeaderSize();
     }
 
+    /**
+     * Provides the total size stored in the multi block as stored in the header
+     * @return the size in bytes
+     */
     public long getTotalDataSize() {
         Block block = root.getBlock();
         block.position(0);
@@ -201,6 +239,11 @@ public class VarSizeMultiBlock {
         return block.getLong(preamble);
     }
 
+    /**
+     * Provides the data stored in this block
+     *
+     * @return the size in bytes
+     */
     public int getBlockDataSize() {
         long totalSize = getTotalDataSize();
         int capacity = getDataCapacity();
@@ -219,25 +262,54 @@ public class VarSizeMultiBlock {
         }
     }
 
-    public int compare(byte[] data, int offset, int length) {
-        Block block = getBlock();
-        block.position(getHeaderSize());
-        return block.compare(data,offset,length);
+    /**
+     * Compares the provided key data array to the data stored in the multi block sequence
+     * @param key the data to be compared with stored
+     * @return negative: current < key, positive: current > data, {@code 0} if they are equal
+     */
+    public int compare(final byte[] key) {
+        root();
+        long dataSize = getDataSize();
+        int offset = 0;
+        do {
+            int size = getBlockDataSize();
+            if (key.length < size + offset) {
+                size = key.length - offset;
+            }
+            final Block block = getBlock();
+            block.position(getHeaderSize());
+            int res = block.compare(key, offset, size);
+            if (res != 0) {
+                return res;
+            }
+            offset += size;
+        } while(next() && offset < key.length && offset < dataSize);
+        return (int)(key.length - dataSize);
     }
 
-    public void put(byte[] data, int offset, int length) {
-        Block block = getBlock();
-        block.position(getHeaderSize());
-        block.put(data,offset,length);
+    /**
+     * Reads the data from the multi block sequence and stores it to the data array
+     *
+     * @return the data of the key
+     */
+    public byte[] get() {
+        root();
+        final int dataSize = (int) getDataSize();
+        final byte[] data = new byte[dataSize];
+        int offset = 0;
+        do {
+            final int size = getBlockDataSize();
+            final Block block = getBlock();
+            block.position(getHeaderSize());
+            block.get(data, offset, size);
+            offset += size;
+        } while (next() && offset < dataSize);
+        return data;
     }
 
-    public void get(byte[] data, int offset, int length) {
-        Block block = getBlock();
-        block.position(getHeaderSize());
-        block.get(data,offset,length);
-    }
-
-
+    /**
+     * Resets the currently selected block to the first block
+     */
     public void root() {
         currentBlockIndex = root.getBlockIndex();
         index = 0;

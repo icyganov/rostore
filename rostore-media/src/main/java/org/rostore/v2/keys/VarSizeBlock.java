@@ -110,38 +110,15 @@ public class VarSizeBlock {
 
     public int compare(final byte[] key) {
         if (isMultiBlock()) {
-            multiBlock.root();
-            long dataSize = multiBlock.getDataSize();
-            int offset = 0;
-            do {
-                int size = multiBlock.getBlockDataSize();
-                if (key.length < size + offset) {
-                    size = key.length - offset;
-                }
-                int res = multiBlock.compare(key, offset, size);
-                if (res != 0) {
-                    return res;
-                }
-                offset += size;
-            } while(multiBlock.next() && offset < key.length && offset < dataSize);
-            return (int)(key.length - dataSize);
+            return multiBlock.compare(key);
         } else {
             return multiEntry.compare(key);
         }
     }
 
-    public byte[] extract() {
+    public byte[] get() {
         if (isMultiBlock()) {
-            multiBlock.root();
-            int dataSize = (int)multiBlock.getDataSize();
-            byte[] data = new byte[dataSize];
-            int offset = 0;
-            do {
-                int size = multiBlock.getBlockDataSize();
-                multiBlock.get(data, offset, size);
-                offset += size;
-            } while(multiBlock.next() && offset < dataSize);
-            return data;
+            return multiBlock.get();
         } else {
             return multiEntry.extract();
         }

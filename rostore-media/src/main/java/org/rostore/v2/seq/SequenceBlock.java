@@ -152,7 +152,7 @@ public abstract class SequenceBlock implements Closeable {
     }
 
     /**
-     * Moves the pointer to invalid index.
+     * Moves the pointer to invalid index, marks the block as invalid.
      */
     public void invalidate() {
         index = -1;
