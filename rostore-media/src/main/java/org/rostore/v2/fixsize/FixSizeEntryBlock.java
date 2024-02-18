@@ -152,9 +152,16 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         return getEntriesNumber() == 0;
     }
 
-    public void moveEntriesFrom(final int sourceIndex, final int sourceEntryStartIndex) {
+    /**
+     * Moves (appends) all entries starting from the given source block index / source entry index to the
+     * last entry in the source block to the end of this block.
+     *
+     * @param sourceSeqIndex the source index of the block within the sequence
+     * @param sourceEntryStartIndex the index of the first entry to move
+     */
+    public void moveEntriesFrom(final int sourceSeqIndex, final int sourceEntryStartIndex) {
         int thisIndex = getIndex();
-        moveTo(sourceIndex);
+        moveTo(sourceSeqIndex);
         Block sourceBlock = getBlock();
         fixSizeEntry.moveTo(sourceEntryStartIndex);
         int sourcePosition = fixSizeEntry.getEntryLocation();
@@ -173,7 +180,7 @@ public class FixSizeEntryBlock<T extends FixSizeEntry> extends SequenceBlock {
         sourceBlock.position(sourcePosition);
         targetBlock.put(sourceBlock, bytesToMove);
         addEntriesNumber(entriesToMove);
-        moveTo(sourceIndex);
+        moveTo(sourceSeqIndex);
         addEntriesNumber(-entriesToMove);
     }
 
