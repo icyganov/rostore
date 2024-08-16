@@ -265,7 +265,7 @@ public class VarSizeMultiBlock {
     /**
      * Compares the provided key data array to the data stored in the multi block sequence
      * @param key the data to be compared with stored
-     * @return negative: current < key, positive: current > data, {@code 0} if they are equal
+     * @return negative: current less than key, positive: current more than key, {@code 0} if they are equal
      */
     public int compare(final byte[] key) {
         root();

@@ -5,19 +5,16 @@ import org.rostore.v2.media.block.BlockProvider;
 import org.rostore.v2.media.block.BlockType;
 
 /**
- * Header:
- * number of bytes      | what
- * ----------------------------
- * 1                    | preamble: number of bytes for length encoding (multi) or 0
- * ----------------------------
- * preamble = 1..4 (multi-block)
- * ----------------------------
- * (bytesPerBlockIndex) | next block index
- * (preamble)           | length of the data
- * ----------------------------
- * preamble = 0 (multi-entries)
- * ----------------------------
- * (bytesPerBlockOffset) | length of data
+ * <table>
+ * <caption>Header</caption>
+ * <tr><th>number of bytes</th><th>what</th></tr>
+ * <tr><td>1</td><td>preamble: number of bytes for length encoding (multi) or 0</td></tr>
+ * <tr><td><b>preamble = 1..4 (multi-block)</b></td></tr>
+ * <tr><td>(bytesPerBlockIndex)</td><td>next block index</td></tr>
+ * <tr><td>(preamble)</td><td>length of the data</td></tr>
+ * <tr><td><b>preamble = 0 (multi-entries)</b></td></tr>
+ * <tr><td>(bytesPerBlockOffset)</td><td>length of data</td></tr>
+ * </table>
  */
 public class VarSizeBlock {
 

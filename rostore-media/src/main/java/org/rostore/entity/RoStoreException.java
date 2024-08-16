@@ -6,14 +6,17 @@ package org.rostore.entity;
 public class RoStoreException extends RuntimeException {
 
     /**
-     * {@inheritDoc}
+     * Create a RoStore expection
+     * @param message error message
      */
     public RoStoreException(final String message) {
         super(message);
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a RiStore exception
+     * @param message error message
+     * @param throwable the cause-exception
      */
     public RoStoreException(final String message, Throwable throwable) {
         super(message, throwable);
