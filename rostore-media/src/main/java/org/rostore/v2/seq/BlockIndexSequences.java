@@ -1,6 +1,7 @@
 package org.rostore.v2.seq;
 
 import org.rostore.v2.media.Media;
+import org.rostore.v2.media.MediaProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,9 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This clas holds all the block sequences in the {@link Media} object.
+ */
 public class BlockIndexSequences {
 
     private static final Logger logger = Logger.getLogger(Media.class.getName());
@@ -35,6 +39,9 @@ public class BlockIndexSequences {
         return blockSequence;
     }
 
+    /**
+     * Closes the block sequence if it is not in use for the {@link MediaProperties#getCloseUnusedSequencesAfterMillis()}}
+     */
     public synchronized void closeExpired() {
         final long currentTime = System.currentTimeMillis();
         final List<Long> blockSeqIdsToRemove = filter((bis) ->

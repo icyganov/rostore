@@ -18,6 +18,12 @@ import org.rostore.v2.seq.SequenceBlock;
 
 import java.util.function.Function;
 
+/**
+ * This is a class to manage keys.
+ * <p>It is NOT thread-safe and should be protected in multi-thread environment.</p>
+ * <p>This class organizes the access to the {@link KeyBlockEntry} and facilitates its work with {@link VarSizeBlock}.</p>
+ * <p>The moves within the key sequence is synchronized with the respective {@link VarSizeBlock} and its variants like {@link VarSizeEntry} and {@link VarSizeMultiBlock}.</p>
+ */
 public class KeyBlockOperations implements Committable {
 
     private final FixSizeEntryBlock<KeyBlockEntry> keyBlock;
@@ -28,12 +34,17 @@ public class KeyBlockOperations implements Committable {
 
     private boolean rebalance = false;
 
+    /**
+     * A block sequence that underlies this operation's object
+     * @return the block sequence
+     */
     public BlockSequence getBlockSequence() {
         return keyBlock.getBlockSequence();
     }
 
     /**
-     * Function calculates how many blocks is used by this key block area
+     * Function removes all the keys from the sequence and remove the sequence itself,
+     * freeing all the resources
      */
     public void remove() {
         CatalogBlockIndices toFree = new CatalogBlockIndices();
@@ -54,6 +65,9 @@ public class KeyBlockOperations implements Committable {
         varSizeBlock.getBlockProvider().getBlockAllocator().free(keyBlock.getBlockSequence().getBlockIndexSequence().createCatalogBlockIndices());
     }
 
+    /**
+     * Dumps the content of the key catalog to the {@link System#out}. This is for debugging purposes.
+     */
     public void dump() {
         for(int i=0; i<keyBlock.getBlockSequence().length(); i++) {
             keyBlock.moveTo(i);
@@ -65,6 +79,13 @@ public class KeyBlockOperations implements Committable {
         }
     }
 
+    /**
+     * Loads the key operations
+     * @param blockAllocator the block allocator to allocate new blocks on behalf of the keys
+     * @param startIndex the index of the first block in the sequence
+     * @param recordLengths the specification of lengths of elements for this class
+     * @return the key operations object
+     */
     public static KeyBlockOperations load(final BlockAllocator blockAllocator,
                                           final long startIndex,
                                           final RecordLengths recordLengths) {
@@ -79,6 +100,15 @@ public class KeyBlockOperations implements Committable {
                                 null), BlockType.KEY));
     }
 
+    /**
+     * Creates a new key operations, allocates a new sequence to manage the keys.
+     * <p>In this way created element stays permanently in the underlying storage.</p>
+     * <p>It can be loaded afterwards by {@link #load(BlockAllocator, long, RecordLengths)}</p>
+     *
+     * @param blockAllocator the block allocator to be used to get the new blocks
+     * @param recordLengths the length of key entry's elements
+     * @return the created instance
+     */
     public static KeyBlockOperations create(final BlockAllocator blockAllocator,
                                             final RecordLengths recordLengths) {
         final BlockProvider blockProvider = InternalBlockProvider.create(blockAllocator);
@@ -92,6 +122,10 @@ public class KeyBlockOperations implements Committable {
                                 null), BlockType.KEY));
     }
 
+    /**
+     * This is first block's index.
+     * @return the index of first memory block
+     */
     public long getStartIndex() {
         return keyBlock.getBlockSequence().getBlockIndexSequence().getBlockIndex(0);
     }
@@ -140,9 +174,10 @@ public class KeyBlockOperations implements Committable {
     }
 
     /**
-     * throws {@link VersionMismatchException}
-     * @param key
-     * @return
+     * Searches a key and removes the key if found.
+     * throws {@link VersionMismatchException} if provided version is not matches to the state in the storage
+     * @param key the key to remove
+     * @return {@code true} if the key is removed
      */
     public boolean remove(final byte[] key, final Record record) {
         try {
@@ -694,6 +729,15 @@ public class KeyBlockOperations implements Committable {
         return varSizeBlock.compare(key);
     }
 
+    /**
+     * List the keys managed by this instance.
+     * <p>It returns only subset of keys limited by {@code maxNumber} and {@code maxSize}, as well as {@code startWithKey}</p>
+     * @param startWithKey the prefix of the keys
+     * @param continuationKey the key to start with
+     * @param maxNumber the maximum number of keys to return
+     * @param maxSize the maximum size of keys to return
+     * @return the list of keys
+     */
     public KeyList list(byte[] startWithKey, byte[] continuationKey, long maxNumber, long maxSize) {
         KeyList keyList = new KeyList();
         if (continuationKey != null) {

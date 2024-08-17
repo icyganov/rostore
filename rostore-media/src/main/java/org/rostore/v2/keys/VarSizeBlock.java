@@ -5,7 +5,7 @@ import org.rostore.v2.media.block.BlockProvider;
 import org.rostore.v2.media.block.BlockType;
 
 /**
- * This class refer the sequence of entries of variable size, that are stores in the memory blocks.
+ * This class refer the sequence of entries of variable size, that are stored in the memory blocks.
  *
  * <p>This block can be set to get the data from the memory blocks in form of entries.</p>
  *
@@ -14,7 +14,11 @@ import org.rostore.v2.media.block.BlockType;
  *
  * <p>In case of multi-block the memory blocks that store the entry are connected to the main one of the sequence.</p>
  *
- * <p>All the entries in such blocks are keys and sorted alphanumerically.</p>
+ * <p>The operations ot this class are steered heavily by the {@link KeyBlockEntry}, that initializes an object of this class based on the currently selected key-entry.
+ * Both classes work in conjunction and split the responsibility in a way that the {@link KeyBlockEntry} organizes a key fix-sized array,
+ * whereas this class manages the key payload itself.</p>
+ *
+ * <p>A reference to the memory block where the var size block is stored is held by the {@link KeyBlockEntry}, as well as the size of the entry.</p>
  *
  * <table>
  * <caption>Header</caption>
@@ -140,9 +144,9 @@ public class VarSizeBlock {
     }
 
     /**
-     * Gets the currently selected block index within the sequence, starting from zero.
+     * Gets the currently selected memory block, this entry works with.
      *
-     * @return the block index
+     * @return the memory block index
      */
     public long getBlockIndex() {
         return blockIndex;
@@ -179,8 +183,7 @@ public class VarSizeBlock {
     }
 
     /**
-     * Selects the current block within sequence.
-     * <p>Function does not validate the block index</p>
+     * Selects the current memory block.
      *
      * @param blockIndex the block index to select
      */
