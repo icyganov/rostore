@@ -22,6 +22,8 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.rostore.v2.container.async.AsyncContainer;
+
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
@@ -149,7 +151,8 @@ public class ContainerAdminService {
                                     schema = @Schema(implementation = ContainerMeta.class))) })
     public Response getContainerMeta(@PathParam("container") final String containerName) {
         apiKeyManager.checkStorePermission(EnumSet.of(Permission.READ));
-        final ContainerMeta containerMeta = roStoreAccessor.getAsyncContainerMedia().getAsyncContainers().get(containerName).getContainer().getDescriptor().getContainerMeta();
+        final AsyncContainer asyncContainer = getAsyncContainer(containerName);
+        final ContainerMeta containerMeta = asyncContainer.getContainer().getDescriptor().getContainerMeta();
         return Response.ok().entity(containerMeta).build();
     }
 
@@ -177,7 +180,18 @@ public class ContainerAdminService {
                                     schema = @Schema(implementation = BlockAllocationState.class))) })
     public Response getContainerSpace(@PathParam("container") final String containerName) {
         apiKeyManager.checkStorePermission(EnumSet.of(Permission.READ));
-        final BlockAllocationState memoryManagementState = roStoreAccessor.getAsyncContainerMedia().getAsyncContainers().get(containerName).getContainer().getBlockAllocation();
+        final AsyncContainer asyncContainer = getAsyncContainer(containerName);
+        final BlockAllocationState memoryManagementState = asyncContainer.getContainer().getBlockAllocation();
         return Response.ok().entity(memoryManagementState).build();
     }
+
+    private AsyncContainer getAsyncContainer(String containerName) {
+        final AsyncContainer asyncContainer = roStoreAccessor.getAsyncContainerMedia().getAsyncContainers().get(containerName);
+        if (asyncContainer == null) {
+            throw new NotFoundException("Container \"" + containerName + "\" does not exist.");
+        }
+        return asyncContainer;
+    }
+
+
 }
